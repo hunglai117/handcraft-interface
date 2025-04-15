@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '../components/Layout';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../contexts/CartContext';
 
 export default function Cart() {
   const { items, removeFromCart, updateQuantity, clearCart, totalItems, subtotal } = useCart();
