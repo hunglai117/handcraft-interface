@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import Layout from "../components/Layout";
-import ProductCard from "../components/ProductCard";
+import { useState, useEffect } from 'react';
+import Layout from '../components/Layout';
+import ProductCard from '../components/ProductCard';
 
 type Product = {
   id: number;
@@ -18,30 +18,26 @@ export default function Shop() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [materials, setMaterials] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [selectedMaterial, setSelectedMaterial] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedMaterial, setSelectedMaterial] = useState<string>('');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 200]);
-  const [sortOption, setSortOption] = useState<string>("");
+  const [sortOption, setSortOption] = useState<string>('');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   useEffect(() => {
     // Fetch products from the API
-    fetch("/api/hello")
-      .then((response) => response.json())
-      .then((data) => {
+    fetch('/api/hello')
+      .then(response => response.json())
+      .then(data => {
         setProducts(data.products);
         setFilteredProducts(data.products);
 
         // Extract unique categories
-        const uniqueCategories = Array.from(
-          new Set(data.products.map((product: Product) => product.category))
-        );
+        const uniqueCategories = Array.from(new Set(data.products.map((product: Product) => product.category)));
         setCategories(uniqueCategories as string[]);
 
         // Extract unique materials
-        const allMaterials = data.products.flatMap(
-          (product: Product) => product.materials
-        );
+        const allMaterials = data.products.flatMap((product: Product) => product.materials);
         const uniqueMaterials = Array.from(new Set(allMaterials));
         setMaterials(uniqueMaterials as string[]);
       });
@@ -52,36 +48,29 @@ export default function Shop() {
 
     // Apply category filter
     if (selectedCategory) {
-      result = result.filter(
-        (product) => product.category === selectedCategory
-      );
+      result = result.filter(product => product.category === selectedCategory);
     }
 
     // Apply material filter
     if (selectedMaterial) {
-      result = result.filter((product) =>
-        product.materials.includes(selectedMaterial)
-      );
+      result = result.filter(product => product.materials.includes(selectedMaterial));
     }
 
     // Apply price range filter
-    result = result.filter(
-      (product) =>
-        product.price >= priceRange[0] && product.price <= priceRange[1]
-    );
+    result = result.filter(product => product.price >= priceRange[0] && product.price <= priceRange[1]);
 
     // Apply sorting
-    if (sortOption === "price-low-high") {
+    if (sortOption === 'price-low-high') {
       result.sort((a, b) => a.price - b.price);
-    } else if (sortOption === "price-high-low") {
+    } else if (sortOption === 'price-high-low') {
       result.sort((a, b) => b.price - a.price);
-    } else if (sortOption === "rating") {
+    } else if (sortOption === 'rating') {
       result.sort((a, b) => b.rating - a.rating);
-    } else if (sortOption === "alpha-asc") {
+    } else if (sortOption === 'alpha-asc') {
       result.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortOption === "alpha-desc") {
+    } else if (sortOption === 'alpha-desc') {
       result.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (sortOption === "best-selling") {
+    } else if (sortOption === 'best-selling') {
       // Here you would sort by a sales metric if available
       // For now, let's use rating as a proxy
       result.sort((a, b) => b.rating - a.rating);
@@ -99,9 +88,7 @@ export default function Shop() {
       {/* Shop Header */}
       <section className="bg-subtle py-12">
         <div className="container mx-auto px-4">
-          <h1 className="font-heading text-h1 text-center mb-4">
-            Shop Our Collection
-          </h1>
+          <h1 className="font-heading text-h1 text-center mb-4">Shop Our Collection</h1>
           <p className="text-center max-w-xl mx-auto">
             Discover our carefully curated selection of handcrafted products.
           </p>
@@ -111,10 +98,7 @@ export default function Shop() {
       <section className="py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap items-center justify-between mb-6">
-            <button
-              className="md:hidden flex items-center text-primary font-medium"
-              onClick={toggleMobileFilter}
-            >
+            <button className="md:hidden flex items-center text-primary font-medium" onClick={toggleMobileFilter}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 mr-2"
@@ -133,27 +117,25 @@ export default function Shop() {
             </button>
 
             <div className="w-full md:w-auto mt-4 md:mt-0 flex items-center justify-end ml-auto">
-              <span className="mr-2 text-gray-700 hidden md:inline-block">
-                Sort by:
-              </span>
+              <span className="mr-2 text-gray-700 hidden md:inline-block">Sort by:</span>
               <div className="dropdown dropdown-end w-full md:w-56">
                 <label
                   tabIndex={0}
                   className="flex justify-between items-center w-full px-3 py-3 border border-gray-300 rounded cursor-pointer hover:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 >
-                  {sortOption === "price-low-high"
-                    ? "Price: Low to High"
-                    : sortOption === "price-high-low"
-                    ? "Price: High to Low"
-                    : sortOption === "rating"
-                    ? "Best Rating"
-                    : sortOption === "best-selling"
-                    ? "Best Selling"
-                    : sortOption === "alpha-asc"
-                    ? "Alphabetically: A-Z"
-                    : sortOption === "alpha-desc"
-                    ? "Alphabetically: Z-A"
-                    : "Featured"}
+                  {sortOption === 'price-low-high'
+                    ? 'Price: Low to High'
+                    : sortOption === 'price-high-low'
+                      ? 'Price: High to Low'
+                      : sortOption === 'rating'
+                        ? 'Best Rating'
+                        : sortOption === 'best-selling'
+                          ? 'Best Selling'
+                          : sortOption === 'alpha-asc'
+                            ? 'Alphabetically: A-Z'
+                            : sortOption === 'alpha-desc'
+                              ? 'Alphabetically: Z-A'
+                              : 'Featured'}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5 ml-2"
@@ -161,45 +143,31 @@ export default function Shop() {
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </label>
-                <ul
-                  tabIndex={0}
-                  className="dropdown-content menu p-2 shadow-md bg-white rounded-md w-full mt-1 z-[1]"
-                >
+                <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md bg-white rounded-md w-full mt-1 z-[1]">
                   <li>
-                    <button
-                      onClick={() => setSortOption("")}
-                      className="py-2 px-4 hover:bg-gray-100 text-left"
-                    >
+                    <button onClick={() => setSortOption('')} className="py-2 px-4 hover:bg-gray-100 text-left">
                       Featured
                     </button>
                   </li>
                   <li>
                     <button
-                      onClick={() => setSortOption("best-selling")}
+                      onClick={() => setSortOption('best-selling')}
                       className="py-2 px-4 hover:bg-gray-100 text-left"
                     >
                       Best Selling
                     </button>
                   </li>
                   <li>
-                    <button
-                      onClick={() => setSortOption("rating")}
-                      className="py-2 px-4 hover:bg-gray-100 text-left"
-                    >
+                    <button onClick={() => setSortOption('rating')} className="py-2 px-4 hover:bg-gray-100 text-left">
                       Best Rating
                     </button>
                   </li>
                   <li>
                     <button
-                      onClick={() => setSortOption("price-low-high")}
+                      onClick={() => setSortOption('price-low-high')}
                       className="py-2 px-4 hover:bg-gray-100 text-left"
                     >
                       Price: Low to High
@@ -207,7 +175,7 @@ export default function Shop() {
                   </li>
                   <li>
                     <button
-                      onClick={() => setSortOption("price-high-low")}
+                      onClick={() => setSortOption('price-high-low')}
                       className="py-2 px-4 hover:bg-gray-100 text-left"
                     >
                       Price: High to Low
@@ -215,7 +183,7 @@ export default function Shop() {
                   </li>
                   <li>
                     <button
-                      onClick={() => setSortOption("alpha-asc")}
+                      onClick={() => setSortOption('alpha-asc')}
                       className="py-2 px-4 hover:bg-gray-100 text-left"
                     >
                       Alphabetically: A-Z
@@ -223,7 +191,7 @@ export default function Shop() {
                   </li>
                   <li>
                     <button
-                      onClick={() => setSortOption("alpha-desc")}
+                      onClick={() => setSortOption('alpha-desc')}
                       className="py-2 px-4 hover:bg-gray-100 text-left"
                     >
                       Alphabetically: Z-A
@@ -236,11 +204,7 @@ export default function Shop() {
 
           <div className="flex flex-wrap -mx-4">
             {/* Filter Sidebar - Desktop */}
-            <div
-              className={`w-full md:w-1/4 px-4 ${
-                isMobileFilterOpen ? "block" : "hidden"
-              } md:block`}
-            >
+            <div className={`w-full md:w-1/4 px-4 ${isMobileFilterOpen ? 'block' : 'hidden'} md:block`}>
               <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
                 <h2 className="font-heading text-h3 mb-4">Categories</h2>
                 <div className="space-y-2">
@@ -249,8 +213,8 @@ export default function Shop() {
                       type="radio"
                       id="all-categories"
                       name="category"
-                      checked={selectedCategory === ""}
-                      onChange={() => setSelectedCategory("")}
+                      checked={selectedCategory === ''}
+                      onChange={() => setSelectedCategory('')}
                       className="mr-2"
                     />
                     <label htmlFor="all-categories">All Categories</label>
@@ -279,9 +243,7 @@ export default function Shop() {
                     min="0"
                     max="200"
                     value={priceRange[1]}
-                    onChange={(e) =>
-                      setPriceRange([priceRange[0], parseInt(e.target.value)])
-                    }
+                    onChange={e => setPriceRange([priceRange[0], parseInt(e.target.value)])}
                     className="w-full"
                   />
                   <div className="flex justify-between mt-2">
@@ -299,8 +261,8 @@ export default function Shop() {
                       type="radio"
                       id="all-materials"
                       name="material"
-                      checked={selectedMaterial === ""}
-                      onChange={() => setSelectedMaterial("")}
+                      checked={selectedMaterial === ''}
+                      onChange={() => setSelectedMaterial('')}
                       className="mr-2"
                     />
                     <label htmlFor="all-materials">All Materials</label>
@@ -326,7 +288,7 @@ export default function Shop() {
             <div className="w-full md:w-3/4 px-4">
               {filteredProducts.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredProducts.map((product) => (
+                  {filteredProducts.map(product => (
                     <ProductCard
                       key={product.id}
                       id={product.id}
@@ -340,13 +302,11 @@ export default function Shop() {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <p className="text-lg mb-4">
-                    No products found matching your filters.
-                  </p>
+                  <p className="text-lg mb-4">No products found matching your filters.</p>
                   <button
                     onClick={() => {
-                      setSelectedCategory("");
-                      setSelectedMaterial("");
+                      setSelectedCategory('');
+                      setSelectedMaterial('');
                       setPriceRange([0, 200]);
                     }}
                     className="btn-secondary"
@@ -359,14 +319,8 @@ export default function Shop() {
               {/* Pagination */}
               {filteredProducts.length > 0 && (
                 <div className="flex justify-center mt-12">
-                  <nav
-                    className="flex items-center space-x-2"
-                    aria-label="Pagination"
-                  >
-                    <button
-                      className="px-3 py-1 border border-subtle rounded-md hover:bg-subtle"
-                      disabled
-                    >
+                  <nav className="flex items-center space-x-2" aria-label="Pagination">
+                    <button className="px-3 py-1 border border-subtle rounded-md hover:bg-subtle" disabled>
                       <span className="sr-only">Previous</span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -375,23 +329,12 @@ export default function Shop() {
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 19l-7-7 7-7"
-                        />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
-                    <button className="px-3 py-1 border border-primary bg-primary text-white rounded-md">
-                      1
-                    </button>
-                    <button className="px-3 py-1 border border-subtle rounded-md hover:bg-subtle">
-                      2
-                    </button>
-                    <button className="px-3 py-1 border border-subtle rounded-md hover:bg-subtle">
-                      3
-                    </button>
+                    <button className="px-3 py-1 border border-primary bg-primary text-white rounded-md">1</button>
+                    <button className="px-3 py-1 border border-subtle rounded-md hover:bg-subtle">2</button>
+                    <button className="px-3 py-1 border border-subtle rounded-md hover:bg-subtle">3</button>
                     <span className="px-2">...</span>
                     <button className="px-3 py-1 border border-subtle rounded-md hover:bg-subtle">
                       <span className="sr-only">Next</span>
@@ -402,12 +345,7 @@ export default function Shop() {
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
                   </nav>

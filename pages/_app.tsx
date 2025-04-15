@@ -1,8 +1,8 @@
-import "../styles/globals.css";
-import type { AppProps } from "next/app";
-import { useState, useEffect } from "react";
-import Head from "next/head";
-import { CartProvider } from "../context/CartContext";
+import '../styles/globals.css';
+import type { AppProps } from 'next/app';
+import { useState, useEffect } from 'react';
+import Head from 'next/head';
+import { CartProvider } from '../context/CartContext';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState(true);
@@ -20,10 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta
-          name="description"
-          content="Discover handcrafted products for your home"
-        />
+        <meta name="description" content="Discover handcrafted products for your home" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

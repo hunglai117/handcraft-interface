@@ -12,8 +12,8 @@ export default function CategoryCard({ name, image, productCount, slug }: Catego
   return (
     <Link href={`/category/${slug}`} className="block group">
       <div className="relative h-[320px] overflow-hidden rounded-lg">
-        <Image 
-          src={image} 
+        <Image
+          src={image}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"

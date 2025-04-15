@@ -1,6 +1,6 @@
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
 
 type ProductCardProps = {
   id: number;
@@ -12,15 +12,7 @@ type ProductCardProps = {
   className?: string;
 };
 
-export default function ProductCard({
-  id,
-  name,
-  price,
-  rating,
-  image,
-  category,
-  className,
-}: ProductCardProps) {
+export default function ProductCard({ id, name, price, rating, image, category, className }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -33,12 +25,12 @@ export default function ProductCard({
         <Link href={`/product/${id}`} className="block h-full">
           <div className="w-full h-[270px] relative">
             <Image
-              src={image || "https://placehold.co/280x280"}
+              src={image || 'https://placehold.co/280x280'}
               alt={name}
               fill
               sizes="(max-width: 768px) 100vw, 280px"
               className="object-cover transition-transform duration-300 ease-in-out"
-              style={{ transform: isHovered ? "scale(1.05)" : "scale(1)" }}
+              style={{ transform: isHovered ? 'scale(1.05)' : 'scale(1)' }}
             />
           </div>
 
@@ -58,28 +50,16 @@ export default function ProductCard({
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
         </button>
       </div>
 
       <div className="p-4 flex flex-col justify-between">
         <div>
-          {category && (
-            <span className="text-accent text-small mb-1 block">
-              {category}
-            </span>
-          )}
+          {category && <span className="text-accent text-small mb-1 block">{category}</span>}
           <h3 className="font-medium mb-1 line-clamp-2 overflow-hidden text-ellipsis">
-            <Link
-              href={`/product/${id}`}
-              className="hover:text-primary truncate block"
-            >
+            <Link href={`/product/${id}`} className="hover:text-primary truncate block">
               {name}
             </Link>
           </h3>
@@ -94,9 +74,7 @@ export default function ProductCard({
                 <svg
                   key={i}
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-4 w-4 ${
-                    i < Math.floor(rating) ? "text-accent" : "text-gray-300"
-                  }`}
+                  className={`h-4 w-4 ${i < Math.floor(rating) ? 'text-accent' : 'text-gray-300'}`}
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >

@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useMediaQuery } from "react-responsive";
+import { useState, useEffect } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
 export function useResponsive() {
   const [mounted, setMounted] = useState(false);

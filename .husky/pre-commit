@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+# Modern husky pre-commit hook
+
+npx lint-staged

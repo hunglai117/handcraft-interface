@@ -1,15 +1,15 @@
-import { useRef, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import SearchBox from "./SearchBox";
-import { useResponsive } from "../hooks/useResponsive";
-import { useRouter } from "next/router";
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import SearchBox from './SearchBox';
+import { useResponsive } from '../hooks/useResponsive';
+import { useRouter } from 'next/router';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { isDesktop, isMobile, mounted } = useResponsive();
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
 
   const openSearch = () => {
@@ -157,12 +157,7 @@ export default function Navbar() {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
           )}
@@ -178,7 +173,7 @@ export default function Navbar() {
                   <input
                     type="text"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={e => setSearchQuery(e.target.value)}
                     placeholder="Search products..."
                     className="w-full py-2 pl-10 pr-4 border border-gray-200 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
                   />
@@ -241,11 +236,7 @@ export default function Navbar() {
       </div>
 
       {/* Search Box Modal */}
-      <SearchBox
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        onOpen={openSearch}
-      />
+      <SearchBox isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} onOpen={openSearch} />
     </nav>
   );
 }

@@ -1,33 +1,32 @@
-import Image from "next/image";
-import Layout from "../components/Layout";
+import Image from 'next/image';
+import Layout from '../components/Layout';
 
 export default function About() {
   const teamMembers = [
     {
-      name: "Hung Lai",
-      role: "Founder & Creative Director",
-      image: "/images/hung.jpg",
-      bio: "Hung is the visionary behind HandcraftBK. With a passion for traditional craftsmanship, he travels the world to discover unique artisans and their stories.",
+      name: 'Hung Lai',
+      role: 'Founder & Creative Director',
+      image: '/images/hung.jpg',
+      bio: 'Hung is the visionary behind HandcraftBK. With a passion for traditional craftsmanship, he travels the world to discover unique artisans and their stories.',
     },
     {
-      name: "Lai Hung",
-      role: "Artisan Relations",
-      image: "/images/hung.jpg",
-      bio: "Lai is dedicated to building strong relationships with our artisan partners. He ensures that their voices are heard and their needs are met, fostering a supportive community.",
+      name: 'Lai Hung',
+      role: 'Artisan Relations',
+      image: '/images/hung.jpg',
+      bio: 'Lai is dedicated to building strong relationships with our artisan partners. He ensures that their voices are heard and their needs are met, fostering a supportive community.',
     },
     {
-      name: "The Hung",
-      role: "Product Curator",
-      image: "/images/hung.jpg",
-      bio: "The Hung has an eye for detail and a love for unique designs. He curates our collection, ensuring that each piece reflects the artistry and culture of its origin.",
+      name: 'The Hung',
+      role: 'Product Curator',
+      image: '/images/hung.jpg',
+      bio: 'The Hung has an eye for detail and a love for unique designs. He curates our collection, ensuring that each piece reflects the artistry and culture of its origin.',
     },
   ];
 
   const values = [
     {
-      title: "Artisan-Focused",
-      description:
-        "We prioritize the wellbeing and fair compensation of the artisans who create our products.",
+      title: 'Artisan-Focused',
+      description: 'We prioritize the wellbeing and fair compensation of the artisans who create our products.',
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -46,9 +45,8 @@ export default function About() {
       ),
     },
     {
-      title: "Sustainable Practices",
-      description:
-        "We are committed to environmental responsibility in our sourcing, production, and shipping.",
+      title: 'Sustainable Practices',
+      description: 'We are committed to environmental responsibility in our sourcing, production, and shipping.',
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -67,9 +65,8 @@ export default function About() {
       ),
     },
     {
-      title: "Cultural Preservation",
-      description:
-        "We honor and help preserve traditional crafting techniques and cultural heritage.",
+      title: 'Cultural Preservation',
+      description: 'We honor and help preserve traditional crafting techniques and cultural heritage.',
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -88,9 +85,9 @@ export default function About() {
       ),
     },
     {
-      title: "Quality Craftsmanship",
+      title: 'Quality Craftsmanship',
       description:
-        "We believe in the value of handmade items and their superior quality compared to mass-produced alternatives.",
+        'We believe in the value of handmade items and their superior quality compared to mass-produced alternatives.',
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -127,12 +124,8 @@ export default function About() {
         </div>
         <div className="relative container mx-auto px-4 h-full flex items-center">
           <div className="max-w-2xl">
-            <h1 className="text-white font-heading text-4xl md:text-5xl font-bold mb-4">
-              Our Story
-            </h1>
-            <p className="text-white text-lg">
-              Connecting artisans and craft lovers since 2025
-            </p>
+            <h1 className="text-white font-heading text-4xl md:text-5xl font-bold mb-4">Our Story</h1>
+            <p className="text-white text-lg">Connecting artisans and craft lovers since 2025</p>
           </div>
         </div>
       </section>
@@ -143,15 +136,12 @@ export default function About() {
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="font-heading text-h1 mb-6">Our Mission</h2>
             <p className="text-lg mb-6 ">
-              At HandcraftBK, we believe in the power of handmade. Our mission
-              is to celebrate and promote the art of traditional craftsmanship
-              by connecting skilled artisans with people who value their work.
+              At HandcraftBK, we believe in the power of handmade. Our mission is to celebrate and promote the art of
+              traditional craftsmanship by connecting skilled artisans with people who value their work.
             </p>
             <p className="text-lg">
-              We strive to create a marketplace that supports sustainable
-              practices, preserves cultural heritage, and ensures fair
-              compensation for the creators behind each unique piece in our
-              collection.
+              We strive to create a marketplace that supports sustainable practices, preserves cultural heritage, and
+              ensures fair compensation for the creators behind each unique piece in our collection.
             </p>
           </div>
         </div>
@@ -164,22 +154,18 @@ export default function About() {
             <div>
               <h2 className="font-heading text-h1 mb-6">Our Journey</h2>
               <p className="mb-4 text-justify">
-                HandcraftBK was established in 2025 by our founder, Hung Lai,
-                who embarked on a journey through Vietnam. During his travels,
-                his was mesmerized by the exquisite craftsmanship he discovered.
-                Inspired by the beauty of these handmade items and mindful of
-                the difficulties artisans faced in accessing global markets, he
-                decided to create HandcraftBK.
+                HandcraftBK was established in 2025 by our founder, Hung Lai, who embarked on a journey through Vietnam.
+                During his travels, his was mesmerized by the exquisite craftsmanship he discovered. Inspired by the
+                beauty of these handmade items and mindful of the difficulties artisans faced in accessing global
+                markets, he decided to create HandcraftBK.
               </p>
               <p className="mb-4 text-justify">
-                What started as a small online shop featuring products from five
-                artisans has grown into a curated marketplace representing over
-                200 craftspeople from more than 30 countries.
+                What started as a small online shop featuring products from five artisans has grown into a curated
+                marketplace representing over 200 craftspeople from more than 30 countries.
               </p>
               <p className="text-justify">
-                Today, we're proud to offer a diverse collection of handcrafted
-                home goods that bring joy to our customers while supporting
-                traditional crafting communities around the world.
+                Today, we're proud to offer a diverse collection of handcrafted home goods that bring joy to our
+                customers while supporting traditional crafting communities around the world.
               </p>
             </div>
             <div className="relative h-[400px]">
@@ -201,10 +187,7 @@ export default function About() {
           <h2 className="font-heading text-h1 text-center mb-12">Our Values</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {values.map((value, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-lg shadow-sm flex"
-              >
+              <div key={index} className="bg-white p-6 rounded-lg shadow-sm flex">
                 <div className="mr-4 flex-shrink-0">{value.icon}</div>
                 <div>
                   <h3 className="font-heading text-h3 mb-2">{value.title}</h3>
@@ -218,22 +201,12 @@ export default function About() {
 
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <h2 className="font-heading text-h1 text-center mb-12">
-            Meet my team
-          </h2>
+          <h2 className="font-heading text-h1 text-center mb-12">Meet my team</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {teamMembers.map((member, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg overflow-hidden shadow-sm"
-              >
+              <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm">
                 <div className="relative h-80">
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    fill
-                    className="object-cover"
-                  />
+                  <Image src={member.image} alt={member.name} fill className="object-cover" />
                 </div>
                 <div className="p-6">
                   <h3 className="font-heading text-h3 mb-1">{member.name}</h3>
@@ -251,10 +224,8 @@ export default function About() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="font-heading text-h1 mb-6">Our Artisan Partners</h2>
           <p className="text-lg mb-10 max-w-3xl mx-auto">
-            We work with over 200 talented artisans from more than 30 countries.
-            Each partner is carefully selected based on their craftsmanship,
-            dedication to traditional techniques, and commitment to sustainable
-            practices.
+            We work with over 200 talented artisans from more than 30 countries. Each partner is carefully selected
+            based on their craftsmanship, dedication to traditional techniques, and commitment to sustainable practices.
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -283,8 +254,8 @@ export default function About() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="font-heading text-h1 mb-6">Join Our Community</h2>
           <p className="text-lg mb-8 max-w-2xl mx-auto">
-            Subscribe to our newsletter to stay updated on new artisans,
-            collections, and the stories behind our handcraft products.
+            Subscribe to our newsletter to stay updated on new artisans, collections, and the stories behind our
+            handcraft products.
           </p>
           <form className="flex flex-col sm:flex-row max-w-md mx-auto">
             <input
@@ -295,7 +266,7 @@ export default function About() {
             />
             <button
               type="button"
-              onClick={() => alert("Subscribed!")}
+              onClick={() => alert('Subscribed!')}
               className="bg-secondary text-primary px-6 py-3 rounded-r font-medium hover:bg-subtle mt-2 sm:mt-0"
             >
               Subscribe
