@@ -45,8 +45,8 @@ export default tseslint.config(
       '@next/next/no-img-element': 'warn',
 
       // General rules
-      'no-unused-vars': 'off', // Handled by TypeScript
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-unused-vars': 'off',
+      'no-console': ['warn'],
       'prefer-const': 'warn',
       'no-duplicate-imports': 'error',
     },

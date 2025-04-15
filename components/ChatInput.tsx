@@ -24,7 +24,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ input, isLoading, onChange, onSub
           <button
             type="button"
             onClick={onCancel}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-md text-primary hover:bg-subtle/30 transition-colors"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-md text-primary hover:bg-subtle/30 transition-colors cursor-pointer"
             title="Cancel"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -35,7 +35,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ input, isLoading, onChange, onSub
           <button
             type="submit"
             className={`absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-md ${
-              !input.trim() ? 'text-subtle cursor-not-allowed' : 'text-primary hover:bg-subtle/30'
+              !input.trim() ? 'text-subtle cursor-not-allowed' : 'text-primary hover:bg-subtle/30 cursor-pointer'
             }`}
             disabled={!input.trim()}
           >

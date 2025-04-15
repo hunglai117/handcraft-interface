@@ -21,7 +21,7 @@ export const SuggestedQuestions = ({ questions, onSelectQuestion }: SuggestedQue
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ delay: 0.3 + idx * 0.1 }}
-            className="p-3 border border-subtle rounded-lg bg-white hover:bg-subtle/30 text-left text-textDark font-body transition-colors"
+            className="p-3 border border-subtle rounded-lg bg-white hover:bg-subtle/30 text-left text-textDark font-body transition-colors cursor-pointer shadow-sm hover:shadow-md"
             onClick={() => onSelectQuestion(question)}
           >
             {question}
