@@ -1,37 +1,38 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import Cookies from "js-cookie";
-import config from "../configs";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import Cookies from 'js-cookie';
+import config from '../configs';
 
 const api = axios.create({
-  baseURL: config.baseApiUrl,
+  baseURL: `${config.baseApiUrl}/api`,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
 api.interceptors.request.use(
-  (config) => {
-    const token = Cookies.get("token");
+  config => {
+    const token = Cookies.get('token');
     if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
   }
 );
 
 api.interceptors.response.use(
-  (response) => response,
+  response => response,
   (error: AxiosError) => {
     const { response } = error;
 
     if (response?.status === 401) {
-      Cookies.remove("token");
+      Cookies.remove('token');
 
-      if (typeof window !== "undefined") {
-        window.location.href = "/login";
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
       }
     }
 
@@ -46,7 +47,7 @@ export interface ApiResponse<T> {
 }
 
 export async function request<T>(
-  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
   url: string,
   data?: any,
   config?: AxiosRequestConfig
@@ -55,19 +56,19 @@ export async function request<T>(
     let response: AxiosResponse;
 
     switch (method) {
-      case "GET":
+      case 'GET':
         response = await api.get(url, { ...config, params: data });
         break;
-      case "POST":
+      case 'POST':
         response = await api.post(url, data, config);
         break;
-      case "PUT":
+      case 'PUT':
         response = await api.put(url, data, config);
         break;
-      case "DELETE":
+      case 'DELETE':
         response = await api.delete(url, { ...config, params: data });
         break;
-      case "PATCH":
+      case 'PATCH':
         response = await api.patch(url, data, config);
         break;
       default:
@@ -86,28 +87,17 @@ export async function request<T>(
   }
 }
 
-export const get = <T>(
-  url: string,
-  params?: any,
-  config?: AxiosRequestConfig
-) => request<T>("GET", url, params, config);
+export const get = <T>(url: string, params?: any, config?: AxiosRequestConfig) =>
+  request<T>('GET', url, params, config);
 
-export const post = <T>(url: string, data?: any, config?: AxiosRequestConfig) =>
-  request<T>("POST", url, data, config);
+export const post = <T>(url: string, data?: any, config?: AxiosRequestConfig) => request<T>('POST', url, data, config);
 
-export const put = <T>(url: string, data?: any, config?: AxiosRequestConfig) =>
-  request<T>("PUT", url, data, config);
+export const put = <T>(url: string, data?: any, config?: AxiosRequestConfig) => request<T>('PUT', url, data, config);
 
-export const del = <T>(
-  url: string,
-  params?: any,
-  config?: AxiosRequestConfig
-) => request<T>("DELETE", url, params, config);
+export const del = <T>(url: string, params?: any, config?: AxiosRequestConfig) =>
+  request<T>('DELETE', url, params, config);
 
-export const patch = <T>(
-  url: string,
-  data?: any,
-  config?: AxiosRequestConfig
-) => request<T>("PATCH", url, data, config);
+export const patch = <T>(url: string, data?: any, config?: AxiosRequestConfig) =>
+  request<T>('PATCH', url, data, config);
 
 export default api;

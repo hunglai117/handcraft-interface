@@ -1,44 +1,44 @@
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import Layout from "../components/Layout";
-import { useRouter } from "next/router";
-import { useAuth } from "../contexts/AuthContext";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Layout from '../components/Layout';
+import { useRouter } from 'next/router';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
   const [credentials, setCredentials] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
   const [rememberMe, setRememberMe] = useState(false);
-  const [loginError, setLoginError] = useState("");
+  const [loginError, setLoginError] = useState('');
   const router = useRouter();
   const { login, user, isLoading, error } = useAuth();
 
   // If user is already logged in, redirect to home page
   useEffect(() => {
     if (user) {
-      router.push("/");
+      router.push('/');
     }
   }, [user, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCredentials((prev) => ({ ...prev, [name]: value }));
+    setCredentials(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoginError("");
+    setLoginError('');
 
     try {
       const success = await login(credentials.email, credentials.password);
       if (success) {
-        router.push("/"); // Redirect to home page after successful login
+        router.push('/'); // Redirect to home page after successful login
       } else {
-        setLoginError(error || "Invalid credentials");
+        setLoginError(error || 'Invalid credentials');
       }
-    } catch (err) {
-      setLoginError("An unexpected error occurred");
+    } catch {
+      setLoginError('An unexpected error occurred');
     }
   };
 
@@ -67,9 +67,7 @@ export default function Login() {
             </div>
 
             {(loginError || error) && (
-              <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
-                {loginError || error}
-              </div>
+              <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">{loginError || error}</div>
             )}
 
             <form onSubmit={handleSubmit}>
@@ -134,7 +132,7 @@ export default function Login() {
                     Signing in...
                   </>
                 ) : (
-                  "Sign In"
+                  'Sign In'
                 )}
               </button>
             </form>
@@ -179,7 +177,7 @@ export default function Login() {
             </div>
 
             <p className="text-center text-gray-600">
-              Don't have an account?{" "}
+              Don't have an account?{' '}
               <Link href="/register" className="text-primary font-medium hover:underline">
                 Sign up
               </Link>

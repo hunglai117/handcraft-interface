@@ -1,26 +1,26 @@
-import { useState } from "react";
-import Layout from "../../components/Layout";
-import { withAuth } from "../../utils/withAuth";
-import { useAuth } from "../../contexts/AuthContext";
+import { useState } from 'react';
+import Layout from '../../components/Layout';
+import { withAuth } from '../../utils/withAuth';
+import { useAuth } from '../../contexts/AuthContext';
 
 function ProfilePage() {
   const { user, logout } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
-    firstName: user?.firstName || "",
-    lastName: user?.lastName || "",
-    email: user?.email || "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "",
-    zip: "",
-    country: "",
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
+    email: user?.email || '',
+    phone: '',
+    address: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setProfileData((prev) => ({ ...prev, [name]: value }));
+    setProfileData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,11 +38,8 @@ function ProfilePage() {
             <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
               <div className="flex justify-between items-center mb-6">
                 <h1 className="font-heading text-h1">My Profile</h1>
-                <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="text-primary hover:underline font-medium"
-                >
-                  {isEditing ? "Cancel" : "Edit Profile"}
+                <button onClick={() => setIsEditing(!isEditing)} className="text-primary hover:underline font-medium">
+                  {isEditing ? 'Cancel' : 'Edit Profile'}
                 </button>
               </div>
 
@@ -196,23 +193,14 @@ function ProfilePage() {
             <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
               <h2 className="font-heading text-h2 mb-4">Account Settings</h2>
               <div className="space-y-4">
-                <button className="text-primary hover:underline font-medium">
-                  Change Password
-                </button>
-                <button className="text-primary hover:underline font-medium">
-                  Email Preferences
-                </button>
-                <button className="text-primary hover:underline font-medium">
-                  Privacy Settings
-                </button>
+                <button className="text-primary hover:underline font-medium">Change Password</button>
+                <button className="text-primary hover:underline font-medium">Email Preferences</button>
+                <button className="text-primary hover:underline font-medium">Privacy Settings</button>
               </div>
             </div>
 
             <div className="text-center mt-8">
-              <button 
-                onClick={logout}
-                className="btn-secondary"
-              >
+              <button onClick={logout} className="btn-secondary">
                 Sign Out
               </button>
             </div>

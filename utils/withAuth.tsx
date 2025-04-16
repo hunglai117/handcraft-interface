@@ -1,10 +1,10 @@
-import { useEffect } from "react";
-import { useRouter } from "next/router";
-import { useAuth } from "../contexts/AuthContext";
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useAuth } from '../contexts/AuthContext';
 
 export function withAuth<P extends object>(
   Component: React.ComponentType<P>,
-  options = { requireAuth: true, redirectTo: "/login" }
+  options = { requireAuth: true, redirectTo: '/login' }
 ) {
   return function AuthenticatedComponent(props: P) {
     const { user, isLoading } = useAuth();

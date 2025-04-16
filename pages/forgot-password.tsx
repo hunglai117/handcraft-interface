@@ -1,24 +1,24 @@
-import { useState } from "react";
-import Link from "next/link";
-import Layout from "../components/Layout";
+import { useState } from 'react';
+import Link from 'next/link';
+import Layout from '../components/Layout';
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
+    setError('');
 
     try {
       // Mock API call - replace with actual reset password logic
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 1500));
       setIsSubmitted(true);
-    } catch (err) {
-      setError("An error occurred. Please try again later.");
+    } catch {
+      setError('An error occurred. Please try again later.');
     } finally {
       setIsLoading(false);
     }
@@ -34,15 +34,11 @@ export default function ForgotPassword() {
               <p className="text-gray-600">
                 {!isSubmitted
                   ? "Enter your email address and we'll send you a link to reset your password."
-                  : "Check your email for password reset instructions."}
+                  : 'Check your email for password reset instructions.'}
               </p>
             </div>
 
-            {error && (
-              <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
-                {error}
-              </div>
-            )}
+            {error && <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">{error}</div>}
 
             {!isSubmitted ? (
               <form onSubmit={handleSubmit}>
@@ -54,7 +50,7 @@ export default function ForgotPassword() {
                     type="email"
                     id="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={e => setEmail(e.target.value)}
                     className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-primary"
                     required
                   />
@@ -71,7 +67,7 @@ export default function ForgotPassword() {
                       Sending...
                     </>
                   ) : (
-                    "Reset Password"
+                    'Reset Password'
                   )}
                 </button>
               </form>
@@ -93,13 +89,10 @@ export default function ForgotPassword() {
                 </svg>
                 <p className="text-green-600 font-medium mb-4">Email sent successfully!</p>
                 <p className="text-gray-600 mb-6">
-                  If an account exists with the email <strong>{email}</strong>, you will receive
-                  password reset instructions shortly.
+                  If an account exists with the email <strong>{email}</strong>, you will receive password reset
+                  instructions shortly.
                 </p>
-                <button
-                  onClick={() => setIsSubmitted(false)}
-                  className="text-primary hover:underline"
-                >
+                <button onClick={() => setIsSubmitted(false)} className="text-primary hover:underline">
                   Try another email
                 </button>
               </div>

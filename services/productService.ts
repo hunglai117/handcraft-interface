@@ -1,38 +1,36 @@
-import { Product } from "@/lib/types/product.type";
-import { get, post, put, del } from "./api";
+import { ESortBy, Product } from '@/lib/types/product.type';
+import { get } from './api';
 
-interface ProductsResponse {
-  products: Product[];
+interface PaginatedProductResponse {
+  items: Product[];
   total: number;
   page: number;
   limit: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
 }
 
-interface ProductFilters {
-  category?: string;
-  priceMin?: number;
-  priceMax?: number;
-  materials?: string[];
-  sortBy?: string;
+export interface ProductFilters {
+  categoryId?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  isActive?: boolean;
+  inStock?: boolean;
+  search?: string;
+  sortBy?: ESortBy;
   page?: number;
   limit?: number;
-  search?: string;
 }
 
-const PREFIX_PATH = "/products";
+const PREFIX_PATH = '/products';
 
 const productService = {
-  getProducts: (filters?: ProductFilters) =>
-    get<ProductsResponse>(PREFIX_PATH, filters),
+  getProducts: (filters?: ProductFilters) => get<PaginatedProductResponse>(PREFIX_PATH, filters),
 
-  getProductById: (id: number | string) =>
-    get<{ product: Product }>(`${PREFIX_PATH}/${id}`),
+  getProductBySlug: (slug: string) => get<Product>(`${PREFIX_PATH}/slug/${slug}`),
 
-  getFeaturedProducts: () =>
-    get<{ products: Product[] }>(`${PREFIX_PATH}/featured`),
-
-  searchProducts: (query: string) =>
-    get<ProductsResponse>(`${PREFIX_PATH}/search`, { query }),
+  getProductById: (id: string) => get<Product>(`${PREFIX_PATH}/${id}`),
 };
 
 export default productService;

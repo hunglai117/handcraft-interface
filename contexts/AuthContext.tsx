@@ -1,20 +1,15 @@
-import { createContext, useState, useContext, useEffect } from "react";
-import { useRouter } from "next/router";
-import Cookies from "js-cookie";
-import authService from "../services/authService";
-import { UserData } from "@/lib/types/auth.type";
-import userService from "@/services/userService";
+import { createContext, useState, useContext, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
+import authService from '../services/authService';
+import { UserData } from '@/lib/types/auth.type';
+import userService from '@/services/userService';
 
 interface AuthContextType {
   user: UserData | null;
   token: string | null;
   login: (email: string, password: string) => Promise<boolean>;
-  register: (userData: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-  }) => Promise<boolean>;
+  register: (userData: { firstName: string; lastName: string; email: string; password: string }) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
   error: string | null;
@@ -25,7 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
@@ -40,15 +35,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const storedToken = Cookies.get("token");
+        const storedToken = Cookies.get('token');
 
         if (storedToken) {
           const response = await userService.getCurrentUser();
           setUser(response.user);
           setToken(storedToken);
         }
-      } catch (error) {
-        Cookies.remove("token");
+      } catch {
+        Cookies.remove('token');
       } finally {
         setIsLoading(false);
       }
@@ -65,33 +60,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await authService.login({ email, password });
       const { token, user } = response;
 
-      Cookies.set("token", token, { expires: 1 / 12 });
+      Cookies.set('token', token, { expires: 1 / 12 });
 
       setUser(user);
       setToken(token);
       return true;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      setError(error.message || "Failed to login");
+      setError(error.message || 'Failed to login');
       return false;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const register = async (userData: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-  }) => {
+  const register = async (userData: { firstName: string; lastName: string; email: string; password: string }) => {
     setIsLoading(true);
     setError(null);
 
     try {
       await authService.register(userData);
       return true;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      setError(error.message || "Failed to register");
+      setError(error.message || 'Failed to register');
       return false;
     } finally {
       setIsLoading(false);
@@ -99,12 +91,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = () => {
-    Cookies.remove("token");
+    Cookies.remove('token');
 
     setUser(null);
     setToken(null);
 
-    router.push("/login");
+    router.push('/login');
   };
 
   const value = {

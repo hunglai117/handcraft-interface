@@ -1,46 +1,46 @@
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import Layout from "../components/Layout";
-import { useRouter } from "next/router";
-import { useAuth } from "../contexts/AuthContext";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Layout from '../components/Layout';
+import { useRouter } from 'next/router';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Register() {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   });
   const [agreeTerms, setAgreeTerms] = useState(false);
-  const [registerError, setRegisterError] = useState("");
+  const [registerError, setRegisterError] = useState('');
   const router = useRouter();
   const { register, user, isLoading, error } = useAuth();
 
   // If user is already logged in, redirect to home page
   useEffect(() => {
     if (user) {
-      router.push("/");
+      router.push('/');
     }
   }, [user, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setRegisterError("");
+    setRegisterError('');
 
     // Validate form
     if (formData.password !== formData.confirmPassword) {
-      setRegisterError("Passwords do not match");
+      setRegisterError('Passwords do not match');
       return;
     }
 
     if (!agreeTerms) {
-      setRegisterError("You must agree to the Terms of Service and Privacy Policy");
+      setRegisterError('You must agree to the Terms of Service and Privacy Policy');
       return;
     }
 
@@ -53,12 +53,12 @@ export default function Register() {
       });
 
       if (success) {
-        router.push("/login?registered=true");
+        router.push('/login?registered=true');
       } else {
-        setRegisterError(error || "Registration failed");
+        setRegisterError(error || 'Registration failed');
       }
-    } catch (err) {
-      setRegisterError("An unexpected error occurred");
+    } catch {
+      setRegisterError('An unexpected error occurred');
     }
   };
 
@@ -87,9 +87,7 @@ export default function Register() {
             </div>
 
             {(registerError || error) && (
-              <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
-                {registerError || error}
-              </div>
+              <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">{registerError || error}</div>
             )}
 
             <form onSubmit={handleSubmit}>
@@ -153,9 +151,7 @@ export default function Register() {
                   required
                   minLength={8}
                 />
-                <p className="text-small text-gray-500 mt-1">
-                  Must be at least 8 characters long
-                </p>
+                <p className="text-small text-gray-500 mt-1">Must be at least 8 characters long</p>
               </div>
 
               <div className="mb-6">
@@ -183,11 +179,11 @@ export default function Register() {
                     className="mt-1 mr-2"
                   />
                   <label htmlFor="agreeTerms" className="text-small text-gray-600">
-                    I agree to the{" "}
+                    I agree to the{' '}
                     <Link href="/terms" className="text-primary hover:underline">
                       Terms of Service
-                    </Link>{" "}
-                    and{" "}
+                    </Link>{' '}
+                    and{' '}
                     <Link href="/privacy" className="text-primary hover:underline">
                       Privacy Policy
                     </Link>
@@ -206,7 +202,7 @@ export default function Register() {
                     Creating account...
                   </>
                 ) : (
-                  "Create Account"
+                  'Create Account'
                 )}
               </button>
             </form>
@@ -251,7 +247,7 @@ export default function Register() {
             </div>
 
             <p className="text-center text-gray-600">
-              Already have an account?{" "}
+              Already have an account?{' '}
               <Link href="/login" className="text-primary font-medium hover:underline">
                 Sign in
               </Link>

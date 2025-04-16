@@ -1,19 +1,19 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { Product } from '@/lib/types/product.type';
+import { createApiImageUrl, formatPriceVND } from '@/utils';
 
 type ProductCardProps = {
-  id: number;
-  name: string;
-  price: number;
-  rating: number;
-  image: string;
-  category?: string;
+  product: Product;
   className?: string;
 };
 
-export default function ProductCard({ id, name, price, rating, image, category, className }: ProductCardProps) {
+export default function ProductCard({ product, className }: ProductCardProps) {
+  const { name, slug, price, rating, images, category } = product;
   const [isHovered, setIsHovered] = useState(false);
+  const displayImage = images && images.length > 0 ? createApiImageUrl(images[0]) : 'https://placehold.co/280x280';
+  const formattedPrice = formatPriceVND(price);
 
   return (
     <div
@@ -22,10 +22,10 @@ export default function ProductCard({ id, name, price, rating, image, category, 
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative overflow-hidden flex-grow">
-        <Link href={`/product/${id}`} className="block h-full">
+        <Link href={`/product/${slug}`} className="block h-full">
           <div className="w-full h-[270px] relative">
             <Image
-              src={image || 'https://placehold.co/280x280'}
+              src={displayImage}
               alt={name}
               fill
               sizes="(max-width: 768px) 100vw, 280px"
@@ -57,16 +57,18 @@ export default function ProductCard({ id, name, price, rating, image, category, 
 
       <div className="p-4 flex flex-col justify-between">
         <div>
-          {category && <span className="text-accent text-small mb-1 block">{category}</span>}
+          {category && <span className="text-accent text-small mb-1 block">{category.name}</span>}
           <h3 className="font-medium mb-1 line-clamp-2 overflow-hidden text-ellipsis">
-            <Link href={`/product/${id}`} className="hover:text-primary truncate block">
+            <Link href={`/product/${slug}`} className="hover:text-primary truncate block">
               {name}
             </Link>
           </h3>
         </div>
 
         <div className="flex items-center justify-between mt-2">
-          <span className="font-medium">${price.toFixed(2)}</span>
+          <div>
+            <span className="font-medium">{formattedPrice}</span>
+          </div>
 
           <div className="flex items-center">
             <div className="flex">
@@ -82,7 +84,7 @@ export default function ProductCard({ id, name, price, rating, image, category, 
                 </svg>
               ))}
             </div>
-            <span className="text-small ml-1">({rating})</span>
+            <span className="text-small ml-1">({rating.toFixed(1)})</span>
           </div>
         </div>
       </div>

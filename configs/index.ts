@@ -1,12 +1,12 @@
-import dev from "./dev.json";
-import prod from "./prod.json";
+import dev from './dev.json';
+import prod from './prod.json';
 
 export interface Config {
   baseApiUrl: string;
   appUrl: string;
 }
 
-export const envConfig = process.env.NEXT_PUBLIC_ENV || "dev";
+export const envConfig = process.env.NEXT_PUBLIC_ENV || 'dev';
 
 interface EnvConfig {
   prod: Config;
