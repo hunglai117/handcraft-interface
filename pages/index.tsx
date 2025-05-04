@@ -5,9 +5,9 @@ import Layout from '../components/Layout';
 import ProductCard from '../components/ProductCard';
 import CategoryCard from '../components/CategoryCard';
 import TestimonialCard from '../components/TestimonialCard';
-import { ESortBy, Product } from '@/lib/types/product.type';
 import productService from '@/services/productService';
 import categoryService, { Category } from '@/services/categoryService';
+import { ESortBy, Product } from '@/lib/types/product.type';
 
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);

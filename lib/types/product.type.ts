@@ -1,30 +1,50 @@
-import { Category } from '@/services/categoryService';
-
 export interface Product {
   id: string;
   name: string;
   slug: string;
-  description?: string;
-  category_id: string;
-  category?: Category;
-  price: string;
-  originalPrice?: string;
+  description: string;
+  category: {
+    id: string;
+    name: string;
+    slug: string;
+  };
   currency: string;
-  stockQuantity: number;
-  sku: string;
   images: string[];
-  specifications?: Record<string, string>;
-  tags?: string[];
-  isActive: boolean;
-  relatedProductIds?: string[];
-  rating: number;
-  reviewCount: number;
+  priceMin: number;
+  priceMax: number;
+  variants: ProductVariant[];
+  options: ProductOption[];
   purchaseCount: number;
+  rating: number;
+  inStock: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface PaginatedProductResponseDto {
+export interface ProductVariant {
+  id: string;
+  productId: string;
+  title: string;
+  price: number;
+  sku: string;
+  stockQuantity: number;
+  weight: number;
+  image?: string;
+  variantOptions: Array<{
+    id: string;
+    value: string;
+    orderIndex: number;
+  }>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProductOption {
+  id: string;
+  name: string;
+}
+
+export interface PaginatedProducts {
   items: Product[];
   total: number;
   page: number;
@@ -40,4 +60,16 @@ export enum ESortBy {
   PRICE_DESC = 'price-desc',
   POPULARITY = 'popularity',
   TOP_SELLER = 'top-seller',
+}
+
+export interface ProductFilters {
+  page?: number;
+  limit?: number;
+  categoryId?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  inStock?: boolean;
+  isActive?: boolean;
+  search?: string;
+  sortBy?: ESortBy;
 }

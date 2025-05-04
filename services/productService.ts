@@ -1,36 +1,21 @@
-import { ESortBy, Product } from '@/lib/types/product.type';
+import { PaginatedProducts, Product, ProductFilters } from '@/lib/types/product.type';
 import { get } from './api';
-
-interface PaginatedProductResponse {
-  items: Product[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
-}
-
-export interface ProductFilters {
-  categoryId?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  isActive?: boolean;
-  inStock?: boolean;
-  search?: string;
-  sortBy?: ESortBy;
-  page?: number;
-  limit?: number;
-}
 
 const PREFIX_PATH = '/products';
 
 const productService = {
-  getProducts: (filters?: ProductFilters) => get<PaginatedProductResponse>(PREFIX_PATH, filters),
+  // Get product listings with optional filtering
+  getProducts: (params: ProductFilters = {}) => get<PaginatedProducts>(`${PREFIX_PATH}`, params),
 
+  // Get a specific product by slug
   getProductBySlug: (slug: string) => get<Product>(`${PREFIX_PATH}/slug/${slug}`),
 
+  // Get a specific product by ID
   getProductById: (id: string) => get<Product>(`${PREFIX_PATH}/${id}`),
+
+  // Get multiple products by their IDs
+  getProductsByIds: (productIds: string[]) =>
+    get<Record<string, Product | null>>(`${PREFIX_PATH}/by-ids`, { productIds: productIds.join(',') }),
 };
 
 export default productService;

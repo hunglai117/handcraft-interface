@@ -36,68 +36,61 @@ api.interceptors.response.use(
       }
     }
 
-    return Promise.reject(error);
+    return Promise.reject(handleError(error));
   }
 );
 
 export interface ApiResponse<T> {
   data: T;
   message?: string;
-  success: boolean;
+  status: number;
 }
 
-export async function request<T>(
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
-  url: string,
-  data?: any,
-  config?: AxiosRequestConfig
-): Promise<T> {
-  try {
-    let response: AxiosResponse;
-
-    switch (method) {
-      case 'GET':
-        response = await api.get(url, { ...config, params: data });
-        break;
-      case 'POST':
-        response = await api.post(url, data, config);
-        break;
-      case 'PUT':
-        response = await api.put(url, data, config);
-        break;
-      case 'DELETE':
-        response = await api.delete(url, { ...config, params: data });
-        break;
-      case 'PATCH':
-        response = await api.patch(url, data, config);
-        break;
-      default:
-        throw new Error(`Unsupported method: ${method}`);
+function handleError(error: AxiosError): Error {
+  if (error.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    const { data }: any = error.response;
+    if (data.message) {
+      if (Array.isArray(data.message)) {
+        return new Error(data.message[0]);
+      }
+      return new Error(data.message);
     }
-
-    return response.data;
-  } catch (error: any) {
-    if (axios.isAxiosError(error)) {
-      const serverError = error.response?.data?.message || error.message;
-      console.error(`API Error: ${serverError}`);
-      throw new Error(serverError);
-    }
-
-    throw error;
+    return new Error('An error occurred with the request.');
+  } else if (error.request) {
+    // The request was made but no response was received
+    return new Error('No response received from the server. Please check your internet connection.');
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    return new Error(error.message || 'An unexpected error occurred.');
   }
 }
 
-export const get = <T>(url: string, params?: any, config?: AxiosRequestConfig) =>
-  request<T>('GET', url, params, config);
+export async function request<T>(method: string, url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  const response: AxiosResponse<any> = await api.request({
+    method,
+    url,
+    data,
+    ...config,
+  });
+  return response.data;
+}
 
-export const post = <T>(url: string, data?: any, config?: AxiosRequestConfig) => request<T>('POST', url, data, config);
+export const get = <T>(url: string, params?: any, config?: AxiosRequestConfig): Promise<T> => {
+  console.log('get', url, params);
+  return request<T>('GET', url, undefined, { ...config, params });
+};
 
-export const put = <T>(url: string, data?: any, config?: AxiosRequestConfig) => request<T>('PUT', url, data, config);
+export const post = <T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> =>
+  request<T>('POST', url, data, config);
 
-export const del = <T>(url: string, params?: any, config?: AxiosRequestConfig) =>
-  request<T>('DELETE', url, params, config);
+export const put = <T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> =>
+  request<T>('PUT', url, data, config);
 
-export const patch = <T>(url: string, data?: any, config?: AxiosRequestConfig) =>
+export const patch = <T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> =>
   request<T>('PATCH', url, data, config);
+
+export const del = <T>(url: string, config?: AxiosRequestConfig): Promise<T> => request<T>('DELETE', url, {}, config);
 
 export default api;

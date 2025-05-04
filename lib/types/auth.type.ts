@@ -4,20 +4,50 @@ export interface LoginCredentials {
 }
 
 export interface RegisterData {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
   password: string;
 }
 
-export interface UserData {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
+export interface AuthResponse {
+  token: string;
 }
 
-export interface AuthResponse {
-  user: UserData;
+export interface SocialLoginData {
+  provider: 'google' | 'facebook';
   token: string;
+}
+
+export interface UserData {
+  id: string;
+  fullName: string;
+  email: string;
+  role: 'user' | 'admin';
+  phone?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserProvider {
+  id: string;
+  provider: 'google' | 'facebook';
+  providerUserId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SocialAuthCredentials {
+  provider: 'google' | 'facebook';
+  token: string;
+}
+
+export interface UpdateProfileData {
+  fullName?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  country?: string;
 }

@@ -7,8 +7,7 @@ function ProfilePage() {
   const { user, logout } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
-    firstName: user?.firstName || '',
-    lastName: user?.lastName || '',
+    fullName: user?.fullName || '',
     email: user?.email || '',
     phone: '',
     address: '',
@@ -46,28 +45,14 @@ function ProfilePage() {
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label htmlFor="firstName" className="block mb-2 font-medium">
-                      First Name
+                    <label htmlFor="fullName" className="block mb-2 font-medium">
+                      Full Name
                     </label>
                     <input
                       type="text"
-                      id="firstName"
-                      name="firstName"
-                      value={profileData.firstName}
-                      onChange={handleChange}
-                      disabled={!isEditing}
-                      className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-gray-100"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="lastName" className="block mb-2 font-medium">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      id="lastName"
-                      name="lastName"
-                      value={profileData.lastName}
+                      id="fullName"
+                      name="fullName"
+                      value={profileData.fullName}
                       onChange={handleChange}
                       disabled={!isEditing}
                       className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-gray-100"
