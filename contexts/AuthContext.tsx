@@ -9,7 +9,7 @@ interface AuthContextType {
   user: UserData | null;
   token: string | null;
   login: (email: string, password: string) => Promise<boolean>;
-  register: (userData: { firstName: string; lastName: string; email: string; password: string }) => Promise<boolean>;
+  register: (userData: { fullName: string; email: string; password: string }) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
   error: string | null;
@@ -38,8 +38,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const storedToken = Cookies.get('token');
 
         if (storedToken) {
-          const response = await userService.getCurrentUser();
-          setUser(response.user);
+          const response = await userService.getProfile();
+          setUser(response);
           setToken(storedToken);
         }
       } catch {
@@ -58,11 +58,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     try {
       const response = await authService.login({ email, password });
-      const { token, user } = response;
+      const { token } = response;
 
       Cookies.set('token', token, { expires: 1 / 12 });
-
-      setUser(user);
+      const responseUser = await userService.getProfile();
+      console.log("responseUser", responseUser);
+      
+      setUser(responseUser);
       setToken(token);
       return true;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,7 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const register = async (userData: { firstName: string; lastName: string; email: string; password: string }) => {
+  const register = async (userData: { fullName: string; email: string; password: string }) => {
     setIsLoading(true);
     setError(null);
 

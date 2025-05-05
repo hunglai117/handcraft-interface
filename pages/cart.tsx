@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '../components/Layout';
-import cartService, { Cart, CartItem } from '../services/cartService';
+import cartService, { Cart} from '../services/cartService';
 import { useAuth } from '../contexts/AuthContext';
 
 const CartPage = () => {
@@ -29,8 +29,12 @@ const CartPage = () => {
     try {
       const data = await cartService.getCart();
       setCart(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load cart');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || 'Failed to load cart');
+      } else {
+        setError('Failed to load cart');
+      }
     } finally {
       setLoading(false);
     }
@@ -43,8 +47,12 @@ const CartPage = () => {
     try {
       const updatedCart = await cartService.updateCartItem(itemId, { quantity });
       setCart(updatedCart);
-    } catch (err: any) {
-      setError(err.message || 'Failed to update item');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || 'Failed to update item');
+      } else {
+        setError('Failed to update item');
+      }
     } finally {
       setUpdatingItems({ ...updatingItems, [itemId]: false });
     }
@@ -56,8 +64,12 @@ const CartPage = () => {
       const updatedCart = await cartService.removeCartItem(itemId);
       setCart(updatedCart);
       setRemovePrompt(null);
-    } catch (err: any) {
-      setError(err.message || 'Failed to remove item');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || 'Failed to remove item');
+      } else {
+        setError('Failed to remove item');
+      }
     } finally {
       setUpdatingItems({ ...updatingItems, [itemId]: false });
     }
@@ -119,7 +131,12 @@ const CartPage = () => {
         {error && <div className="mb-4 bg-red-100 text-red-700 p-4 rounded">{error}</div>}
 
         {removePrompt && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div
+            style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              position: 'fixed',
+            }} 
+            className="fixed inset-0 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full">
               <h3 className="text-lg font-medium mb-4">Remove Item</h3>
               <p className="mb-6">Are you sure you want to remove this item from your cart?</p>
@@ -149,7 +166,7 @@ const CartPage = () => {
                 <div className="sm:w-1/4 mb-4 sm:mb-0">
                   <div className="relative h-32 w-32 sm:h-full sm:w-full mx-auto">
                     <Image
-                      src={item.productVariant.image || '/images/placeholder.png'}
+                      src={item.productVariant.image || '/images/default_product.png'}
                       alt={item.productVariant.title}
                       fill
                       style={{ objectFit: 'cover' }}
@@ -159,10 +176,12 @@ const CartPage = () => {
                 </div>
 
                 <div className="sm:w-3/4 sm:ml-6 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-semibold text-lg">{item.productVariant.title}</h3>
+                    <div>
+                    <Link href={`/products/${item.productVariant.productId}`} className="font-semibold text-lg">
+                      {item.productVariant.title}
+                    </Link>
                     <div className="text-gray-600 mb-4">{formatPrice(item.productVariant.price)} each</div>
-                  </div>
+                    </div>
 
                   <div className="flex flex-wrap justify-between items-end">
                     <div className="flex items-center mb-2 sm:mb-0">
@@ -190,7 +209,7 @@ const CartPage = () => {
                     </div>
 
                     <div className="flex items-center space-x-4">
-                      <div className="font-semibold">{formatPrice(item.price)}</div>
+                      <div className="font-semibold">{formatPrice(item.productVariant.price * item.quantity)}</div>
                       <button
                         className="text-red-600 hover:text-red-800"
                         onClick={() => setRemovePrompt(item.id)}
@@ -242,6 +261,8 @@ const CartPage = () => {
               <Link
                 href="/checkout"
                 className="w-full block text-center bg-primary text-white py-3 px-4 rounded-md hover:bg-primary-dark transition"
+                style={{color: 'white'}}
+              
               >
                 Proceed to Checkout
               </Link>

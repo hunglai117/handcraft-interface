@@ -6,7 +6,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useOrder } from '@/contexts/OrderContext';
 import { useAuth } from '@/contexts/AuthContext';
 import cartService from '@/services/cartService';
-import { PaymentMethod, ShippingAddress, CreateOrderRequest } from '@/services/orderService';
+import { PaymentMethod,  } from '@/services/orderService';
 import { formatPriceVND } from '@/utils';
 import Image from 'next/image';
 

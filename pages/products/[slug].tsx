@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Layout from '../../components/Layout';
-import productService, { Product, ProductVariant } from '../../services/productService';
+import productService from '../../services/productService';
 import cartService from '../../services/cartService';
 import { useAuth } from '../../contexts/AuthContext';
+import { Product, ProductVariant } from '@/lib/types/product.type';
 
 const ProductDetailPage = () => {
   const router = useRouter();
@@ -178,11 +179,11 @@ const ProductDetailPage = () => {
 
   return (
     <Layout title={`${product.name} | HandcraftBK`}>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4" style={{ padding: '30px 0' }}>
         <div className="mb-4">
           <button
             onClick={() => router.back()}
-            className="text-gray-600 hover:text-primary transition flex items-center"
+            className="text-gray-600 hover:text-primary transition flex items-center cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -334,7 +335,7 @@ const ProductDetailPage = () => {
                 <button
                   className="w-10 h-10 border border-gray-300 rounded-r flex items-center justify-center hover:bg-gray-100"
                   onClick={() => handleQuantityChange(quantity + 1)}
-                  disabled={selectedVariant && quantity >= selectedVariant.stockQuantity}
+                  disabled={!!selectedVariant && quantity >= (selectedVariant?.stockQuantity || 0)}
                 >
                   +
                 </button>

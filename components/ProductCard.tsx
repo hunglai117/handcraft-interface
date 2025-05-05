@@ -2,45 +2,45 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Product } from '@/lib/types/product.type';
-import { createApiImageUrl, formatPriceVND } from '@/utils';
+import { formatPriceVND } from '@/utils';
 
 type ProductCardProps = {
   product: Product;
   className?: string;
 };
 
-export default function ProductCard({ product, className }: ProductCardProps) {
-  const { name, slug, price, rating, images, category } = product;
+export default function ProductCard({ product, className = '' }: ProductCardProps) {
+  const { name, slug, priceMin, priceMax, rating, images, category } = product;
+
   const [isHovered, setIsHovered] = useState(false);
-  const displayImage = images && images.length > 0 ? createApiImageUrl(images[0]) : 'https://placehold.co/280x280';
-  const formattedPrice = formatPriceVND(price);
+
+  const displayImage = images && images.length > 0 ? images[0] : 'https://placehold.co/280x280';
+
+  const hasPriceRange = priceMin !== priceMax;
+  const priceDisplay = hasPriceRange
+    ? `${formatPriceVND(priceMin.toLocaleString())} - ${formatPriceVND(priceMax.toLocaleString())}`
+    : formatPriceVND(priceMin.toLocaleString());
 
   return (
     <div
-      className={`product-card ${className}`}
+      className={`group border rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-lg transition-shadow duration-300 ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative overflow-hidden flex-grow">
-        <Link href={`/product/${slug}`} className="block h-full">
-          <div className="w-full h-[270px] relative">
-            <Image
-              src={displayImage}
-              alt={name}
-              fill
-              sizes="(max-width: 768px) 100vw, 280px"
-              className="object-cover transition-transform duration-300 ease-in-out"
-              style={{ transform: isHovered ? 'scale(1.05)' : 'scale(1)' }}
-            />
-          </div>
-
-          {isHovered && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black opacity-30 transition-opacity duration-300"></div>
-          )}
+      <div className="relative w-full h-[350px]">
+        <Link href={`/product/${slug}`}>
+          <Image
+            src={displayImage}
+            alt={name}
+            fill
+            sizes="(max-width: 768px) 100vw, 280px"
+            className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+          />
+          {isHovered && <div className="absolute inset-0 bg-black/20 transition-opacity duration-300" />}
         </Link>
 
         <button
-          className="absolute bottom-4 right-4 bg-primary text-white p-2 rounded-full hover:bg-accent transition-colors duration-200 cursor-pointer"
+          className="absolute bottom-4 right-4 bg-primary text-white p-2 rounded-full hover:bg-accent transition-colors duration-200 cursor-pointer z-10"
           aria-label="Add to cart"
         >
           <svg
@@ -55,20 +55,16 @@ export default function ProductCard({ product, className }: ProductCardProps) {
         </button>
       </div>
 
-      <div className="p-4 flex flex-col justify-between">
-        <div>
-          {category && <span className="text-accent text-small mb-1 block">{category.name}</span>}
-          <h3 className="font-medium mb-1 line-clamp-2 overflow-hidden text-ellipsis">
-            <Link href={`/product/${slug}`} className="hover:text-primary truncate block">
-              {name}
-            </Link>
-          </h3>
-        </div>
+      <div className="p-4 flex flex-col justify-between gap-2">
+        {category && <span className="text-accent text-xs uppercase">{category.name}</span>}
+        <h3 className="font-semibold text-base line-clamp-2">
+          <Link href={`/product/${slug}`} className="hover:text-primary">
+            {name}
+          </Link>
+        </h3>
 
-        <div className="flex items-center justify-between mt-2">
-          <div>
-            <span className="font-medium">{formattedPrice}</span>
-          </div>
+        <div className="flex items-center justify-between mt-1">
+          <span className="font-bold text-primary">{priceDisplay}</span>
 
           <div className="flex items-center">
             <div className="flex">
@@ -76,7 +72,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
                 <svg
                   key={i}
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-4 w-4 ${i < Math.floor(rating) ? 'text-accent' : 'text-gray-300'}`}
+                  className={`h-4 w-4 ${i < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-300'}`}
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -84,7 +80,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
                 </svg>
               ))}
             </div>
-            <span className="text-small ml-1">({rating.toFixed(1)})</span>
+            <span className="text-xs text-gray-600 ml-1">({rating.toFixed(1)})</span>
           </div>
         </div>
       </div>

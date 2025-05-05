@@ -1,5 +1,6 @@
+import { ProductVariant } from '@/lib/types/product.type';
 import { get, post, put, del } from './api';
-import { Product, ProductVariant } from './productService';
+
 
 const PREFIX_PATH = '/cart';
 

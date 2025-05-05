@@ -1,16 +1,54 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import SearchBox from './SearchBox';
 import { useResponsive } from '../hooks/useResponsive';
 import { useRouter } from 'next/router';
+import categoryService, { Category } from '@/services/categoryService';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { isDesktop, isMobile, mounted } = useResponsive();
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
+  const [menuCategories, setMenuCategories] = useState<Category[]>([]);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const { token, logout } = useAuth();
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
+  
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsCategoryOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const categoriesResponse = await categoryService.getMenuCategories();
+
+        setMenuCategories(categoriesResponse.categories);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   const openSearch = () => {
     setIsSearchOpen(true);
@@ -59,12 +97,36 @@ export default function Navbar() {
                 >
                   Home
                 </Link>
-                <Link
-                  href="/categories"
-                  className="hover:text-primary font-medium transition border-b-2 border-transparent hover:border-primary pb-1 leading-[24px]"
+                <div
+                  ref={dropdownRef}
+                  onClick={() => setIsCategoryOpen(prev => !prev)}
+                  className={`
+                            relative
+                            font-medium
+                            leading-6
+                            cursor-pointer
+                            border-b-2 border-transparent
+                            text-gray-800
+                            transition-colors duration-200
+                            hover:text-primary hover:border-primary
+                          `}
                 >
                   Categories
-                </Link>
+                  {isCategoryOpen && (
+                    <div className="absolute top-full left-0 mt-2 bg-white shadow-lg border border-gray-200 rounded-lg z-50 w-48">
+                      <ul className="py-2">
+                        {menuCategories.map(category => (
+                          <li key={category.id} className="px-4 py-2 hover:bg-gray-100">
+                            <Link href={`/categories/${category.id}`} onClick={() => setIsCategoryOpen(false)}>
+                              {category.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
                 <Link
                   href="/about"
                   className="hover:text-primary font-medium transition border-b-2 border-transparent hover:border-primary pb-1 leading-[24px]"
@@ -123,10 +185,19 @@ export default function Navbar() {
                     </span>
                   </div>
                 </Link>
-                <Link href="/account" className="hover:text-primary transition">
+                <div
+                  ref={dropdownRef}
+                  onClick={() => setIsAccountOpen(prev => !prev)}
+                  className={`
+                    relative
+                    cursor-pointer
+                    hover:text-primary
+                    transition
+                  `}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6  hover:text-primary transition"
+                    className="h-6 w-6 hover:text-primary transition"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -138,7 +209,38 @@ export default function Navbar() {
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
-                </Link>
+                  {isAccountOpen && (
+                    <div className="absolute top-full right-0 mt-2 bg-white shadow-lg border border-gray-200 rounded-lg z-50 w-48">
+                      <ul className="py-2">
+                        {token ? (
+                          <>
+                            <li className="px-4 py-2 hover:bg-gray-100">
+                              <Link href="/profile" onClick={() => setIsAccountOpen(false)}>
+                                Thông tin cá nhân
+                              </Link>
+                            </li>
+                            <li className="px-4 py-2 hover:bg-gray-100">
+                              <Link href="/orders" onClick={() => setIsAccountOpen(false)}>
+                                Thanh toán
+                              </Link>
+                            </li>
+                            <li className="px-4 py-2 hover:bg-gray-100">
+                              <button onClick={handleLogout} className="w-full text-left">
+                                Đăng xuất
+                              </button>
+                            </li>
+                          </>
+                        ) : (
+                          <li className="px-4 py-2 hover:bg-gray-100">
+                            <Link href="/login" onClick={() => setIsAccountOpen(false)}>
+                              Đăng nhập
+                            </Link>
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}

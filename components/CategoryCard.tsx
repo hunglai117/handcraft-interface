@@ -8,7 +8,7 @@ type CategoryCardProps = {
 };
 
 export default function CategoryCard({ category, image }: CategoryCardProps) {
-  const { name, pathUrl, productsCount } = category;
+  const { name, id, productsCount } = category;
   const formattedProductsCount = productsCount > 999 ? '999+' : productsCount;
   const formattedName = name.length > 20 ? `${name.slice(0, 20)}...` : name;
   const formattedProductsCountText =
@@ -19,7 +19,7 @@ export default function CategoryCard({ category, image }: CategoryCardProps) {
         : 'No products';
 
   return (
-    <Link href={`/categories/${pathUrl}`} className="block group">
+    <Link href={`/categories/${id}`} className="block group">
       <div className="relative h-[320px] overflow-hidden rounded-lg">
         <Image
           src={image || 'https://placehold.co/400x400'}

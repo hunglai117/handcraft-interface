@@ -5,9 +5,12 @@ import Link from 'next/link';
 import Layout from '../../components/Layout';
 import productService from '../../services/productService';
 import { ESortBy, Product, ProductFilters } from '@/lib/types/product.type';
+import categoryService, { Category } from '@/services/categoryService';
 
 const ProductsPage = () => {
   const router = useRouter();
+  const { category_id } = router.query;
+  const [category, setCategory] = useState<Category>();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -20,12 +23,12 @@ const ProductsPage = () => {
   });
 
   useEffect(() => {
-    const { categoryId, minPrice, maxPrice, search, sortBy, page = '1' } = router.query;
+    const { minPrice, maxPrice, search, sortBy, page = '1' } = router.query;
 
     const newFilters: ProductFilters = {
       page: Number(page),
       limit: 12,
-      ...(categoryId && { categoryId: categoryId as string }),
+      categoryId: category_id as string,
       ...(minPrice && { minPrice: Number(minPrice) }),
       ...(maxPrice && { maxPrice: Number(maxPrice) }),
       ...(search && { search: search as string }),
@@ -36,7 +39,8 @@ const ProductsPage = () => {
     setFilters(newFilters);
     setPage(Number(page) || 1);
     fetchProducts(newFilters);
-  }, [router.query]);
+    fetchCategory();
+  }, [router.query, category_id]);
 
   const fetchProducts = async (params: ProductFilters) => {
     setLoading(true);
@@ -54,22 +58,37 @@ const ProductsPage = () => {
       setLoading(false);
     }
   };
+  const fetchCategory = async () => {
+    setLoading(true);
+    try {
+      const response = await categoryService.getCategoryById(category_id as string);
+      setCategory(response);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to fetch products');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const sortBy = e.target.value;
     router.push({
-      pathname: '/products',
+      pathname: '/categories/[category_id]',
       query: { ...router.query, sortBy, page: 1 },
     });
   };
 
   const handlePriceFilterChange = (min?: number, max?: number) => {
     router.push({
-      pathname: '/products',
+      pathname: '/categories/[category_id]',
       query: {
         ...router.query,
-        ...(min !== undefined && { minPrice: min }),
-        ...(max !== undefined && { maxPrice: max }),
+        minPrice: min,
+        maxPrice: max,
         page: 1,
       },
     });
@@ -78,7 +97,7 @@ const ProductsPage = () => {
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return;
     router.push({
-      pathname: '/products',
+      pathname: '/categories/[category_id]',
       query: { ...router.query, page: newPage },
     });
   };
@@ -94,7 +113,16 @@ const ProductsPage = () => {
   return (
     <Layout title="Products | HandcraftBK">
       <div className="container mx-auto px-4" style={{ padding: '30px 0' }}>
-        <h1 className="text-3xl font-bold mb-8">Handcrafted Products</h1>
+        <h1 className="text-3xl font-bold mb-8">{category?.name}</h1>
+        <div className="mb-6">
+          <Link
+            href="/products"
+            className="inline-block px-6 py-3 bg-primary text-white rounded hover:bg-primary-dark transition-colors cursor-pointer"
+            style={{ color: 'white' }}
+          >
+            View All Products
+          </Link>
+        </div>
 
         {/* Filters */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">

@@ -1,3 +1,4 @@
+import { UserData } from '@/lib/types/auth.type';
 import { get, put } from './api';
 
 const PREFIX_PATH = '/users';
@@ -33,7 +34,7 @@ export interface UpdateProfileRequestDto {
 
 const userService = {
   // Get the current authenticated user's profile
-  getProfile: () => get<UserDto>(`${PREFIX_PATH}/profile`),
+  getProfile: () => get<UserData>(`${PREFIX_PATH}/profile`),
 
   // Update the user's profile information
   updateProfile: (userData: UpdateProfileRequestDto) => put<UserDto>(`${PREFIX_PATH}/profile`, userData),

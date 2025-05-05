@@ -11,6 +11,7 @@ import { ESortBy, Product } from '@/lib/types/product.type';
 
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [initNumberCategories, setInitNumberCategories] = useState(3);
   const [menuCategories, setMenuCategories] = useState<Category[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,9 +27,11 @@ export default function Home() {
           isActive: true,
           inStock: true,
         });
+        
         setFeaturedProducts(productsResponse.items);
 
         const categoriesResponse = await categoryService.getMenuCategories();
+
         setMenuCategories(categoriesResponse.categories);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -51,8 +54,13 @@ export default function Home() {
       prevIndex - 3 < 0 ? Math.floor((featuredProducts.length - 1) / 3) * 3 : prevIndex - 3
     );
   };
+  const handleViewMoreCategories = () => {
+    setInitNumberCategories(prev => prev + 6);
+    if (initNumberCategories >= menuCategories.length) {
+      setInitNumberCategories(menuCategories.length);
+    }
+  };
 
-  const featuredCategories = menuCategories.slice(0, 3);
 
   const categoryImages = ['/images/insta-1.jpg', '/images/insta-2.jpg', '/images/insta-3.jpg'];
 
@@ -118,7 +126,7 @@ export default function Home() {
             <>
               {menuCategories.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {featuredCategories.map((category, index) => (
+                  {menuCategories.slice(0, initNumberCategories).map((category, index) => (
                     <CategoryCard
                       key={category.id}
                       category={category}
@@ -132,11 +140,14 @@ export default function Home() {
             </>
           )}
 
+          {initNumberCategories < menuCategories.length &&
           <div className="text-center mt-10">
-            <Link href="/products" className="btn-secondary inline-block">
-              View All Products
-            </Link>
-          </div>
+            <button 
+            onClick={handleViewMoreCategories}
+            className="btn-secondary inline-block">
+              View More Categories
+            </button>
+          </div>}
         </div>
       </section>
 
