@@ -29,7 +29,7 @@ export enum PaymentStatus {
 
 export enum PaymentMethod {
   VNPAY = 'vnpay',
-  PAYPAL = 'paypal',
+  CASH_ON_DELIVERY = 'cash_on_delivery',
 }
 
 export interface OrderItem {

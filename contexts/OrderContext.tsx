@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, ReactNode } from 'react';
 import orderService, { Order, OrderStatus, PlaceOrderDto } from '@/services/orderService';
 import { useAuth } from './AuthContext';
-import { useRouter } from 'next/router';
+import promotionService, { Promotion } from '@/services/promotionService';
 
 interface OrderContextType {
   orders: Order[];
@@ -18,7 +18,7 @@ interface OrderContextType {
   createOrder: (orderData: PlaceOrderDto) => Promise<Order | null>;
   cancelOrder: (orderId: string) => Promise<boolean>;
   createPaymentUrl: (orderId: string) => Promise<string | null>;
-  verifyPromoCode: (code: string) => Promise<{ valid: boolean; discount: number; message: string }>;
+  verifyPromoCode: (code: string) => Promise<{valid:boolean, promotion?:Promotion, message?:string}>;
   clearCurrentOrder: () => void;
 }
 
@@ -44,13 +44,14 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
 
     try {
-      const response = await orderService.getUserOrders(page);
+      const response = await orderService.getOrders(page);
       setOrders(response.items);
       setPagination({
-        currentPage: response.currentPage,
+        currentPage: response.page,
         totalPages: response.totalPages,
-        totalItems: response.totalItems,
+        totalItems: response.total,
       });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || 'Failed to fetch orders');
     } finally {
@@ -65,8 +66,9 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
 
     try {
-      const order = await orderService.getOrderById(orderId);
+      const order = await orderService.getOrder(orderId);
       setCurrentOrder(order);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || 'Failed to fetch order details');
     } finally {
@@ -74,16 +76,17 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createOrder = async (orderData: CreateOrderRequest): Promise<Order | null> => {
+  const createOrder = async (orderData: PlaceOrderDto): Promise<Order | null> => {
     if (!user) return null;
 
     setLoading(true);
     setError(null);
 
     try {
-      const newOrder = await orderService.createOrder(orderData);
+      const newOrder = await orderService.placeOrder(orderData);
       setCurrentOrder(newOrder);
       return newOrder;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || 'Failed to create order');
       return null;
@@ -115,6 +118,7 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
       );
 
       return true;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || 'Failed to cancel order');
       return false;
@@ -145,8 +149,9 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
 
     try {
-      const result = await orderService.verifyPromoCode(code);
+      const result = await promotionService.validateCode(code);
       return result;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || 'Failed to verify promotion code');
       return { valid: false, discount: 0, message: err.message || 'Invalid code' };

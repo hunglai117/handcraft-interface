@@ -23,7 +23,7 @@ function OrderSuccessPage() {
 
       setIsLoaded(true);
     }
-  }, [orderId, fetchOrderDetails, clearCart]);
+  }, [orderId]);
 
   if (!isLoaded || loading) {
     return (
@@ -139,23 +139,23 @@ function OrderSuccessPage() {
                 <div className="flex justify-between mb-4">
                   <div>
                     <p className="text-gray-500">Order Number</p>
-                    <p className="font-medium">#{currentOrder.id.substring(0, 8)}</p>
+                    <p className="font-medium">#{currentOrder.id}</p>
                   </div>
-                  <div className="text-right">
+                  {/* <div className="text-right">
                     <p className="text-gray-500">Order Date</p>
-                    <p className="font-medium">{new Date(currentOrder.createdAt).toLocaleDateString()}</p>
-                  </div>
+                    <p className="font-medium">{new Date(currentOrder).toLocaleDateString()}</p>
+                  </div> */}
                 </div>
 
                 <div className="border-t border-gray-200 pt-4">
                   <div className="flex justify-between mb-2">
                     <p className="text-gray-600">Total Amount</p>
-                    <p className="font-bold">{formatPriceVND(currentOrder.totalPrice)}</p>
+                    <p className="font-bold">{formatPriceVND(currentOrder.totalAmount.toString())}</p>
                   </div>
-                  <div className="flex justify-between">
+                  {/* <div className="flex justify-between">
                     <p className="text-gray-600">Payment Method</p>
-                    <p>{currentOrder.paymentMethod.replace('_', ' ')}</p>
-                  </div>
+                    <p>{currentOrder..replace('_', ' ')}</p>
+                  </div> */}
                 </div>
               </div>
 

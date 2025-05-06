@@ -6,11 +6,13 @@ import { useResponsive } from '../hooks/useResponsive';
 import { useRouter } from 'next/router';
 import categoryService, { Category } from '@/services/categoryService';
 import { useAuth } from '@/contexts/AuthContext';
+import cartService from '@/services/cartService';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [totalCartItems, setTotalCartItems] = useState(0);
   const { isDesktop, isMobile, mounted } = useResponsive();
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
@@ -22,7 +24,7 @@ export default function Navbar() {
     logout();
     router.push('/login');
   };
-  
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -37,19 +39,32 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const categoriesResponse = await categoryService.getMenuCategories();
+    fetchData();
+    if (token) {
+      fetchCart();
+    }
+  }, [token]);
+  const fetchData = async () => {
+    try {
+      const categoriesResponse = await categoryService.getMenuCategories();
 
-        setMenuCategories(categoriesResponse.categories);
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      setMenuCategories(categoriesResponse.categories);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  const fetchCart = async () => {
+    try {
+      const data = await cartService.getCart();
+      setTotalCartItems(data.cartItems.length);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.log(err.message || 'Failed to load cart');
+      } else {
+        console.log('Failed to load cart');
       }
     }
-
-    fetchData();
-  }, []);
-
+  };
   const openSearch = () => {
     setIsSearchOpen(true);
   };
@@ -180,9 +195,11 @@ export default function Navbar() {
                         d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                       />
                     </svg>
-                    <span className="badge badge-xs badge-primary indicator-item text-small text-white bg-primary rounded-full">
-                      2
-                    </span>
+                    {totalCartItems && totalCartItems > 0 && (
+                      <span className="badge badge-xs badge-primary indicator-item text-small text-white bg-primary rounded-full">
+                        {totalCartItems}
+                      </span>
+                    )}
                   </div>
                 </Link>
                 <div
