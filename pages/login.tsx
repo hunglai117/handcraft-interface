@@ -81,7 +81,7 @@ export default function Login() {
                   name="email"
                   value={credentials.email}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary"
                   required
                 />
               </div>
@@ -101,7 +101,7 @@ export default function Login() {
                   name="password"
                   value={credentials.password}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary"
                   required
                 />
               </div>
@@ -113,9 +113,9 @@ export default function Login() {
                     id="remember"
                     checked={rememberMe}
                     onChange={() => setRememberMe(!rememberMe)}
-                    className="mr-2"
+                    className="mr-2 cursor-pointer"
                   />
-                  <label htmlFor="remember" className="text-small text-gray-600">
+                  <label htmlFor="remember" className="text-small text-gray-600 cursor-pointer">
                     Remember me
                   </label>
                 </div>
@@ -124,11 +124,11 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="btn-primary w-full flex justify-center items-center"
+                className="cursor-pointer btn-primary w-full flex justify-center items-center"
               >
                 {isLoading ? (
                   <>
-                    <span className="inline-block h-4 w-4 border-t-2 border-b-2 border-white rounded-full animate-spin mr-2"></span>
+                    <span className="cursor-pointer inline-block h-4 w-4 border-t-2 border-b-2 border-white rounded-full animate-spin mr-2"></span>
                     Signing in...
                   </>
                 ) : (

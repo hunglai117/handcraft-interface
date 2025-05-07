@@ -15,7 +15,7 @@ export default function Chatbot() {
   const suggestedQuestions = [
     'What products do you offer?',
     'What materials do you use?',
-    'How long does shipping take?',
+    'How long does shipping take?', 
     'What is your return policy?',
   ];
 

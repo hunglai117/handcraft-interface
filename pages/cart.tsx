@@ -96,7 +96,7 @@ const CartPage = () => {
   if (!cart || cart.cartItems.length === 0) {
     return (
       <Layout title="Your Cart | HandcraftBK">
-        <div className="container mx-auto px-4 py-10 min-h-[60vh]">
+        <div className="container mx-auto px-4 py-10 min-h-[70vh]">
           <h1 className="text-3xl font-bold mb-6">Your Cart</h1>
           <div className="bg-white rounded-lg shadow-sm p-8 text-center">
             <div className="mb-4">
@@ -177,10 +177,10 @@ const CartPage = () => {
 
                 <div className="sm:w-3/4 sm:ml-6 flex flex-col justify-between">
                     <div>
-                    <Link href={`/products/${item.productVariant.productId}`} className="font-semibold text-lg">
-                      {item.productVariant.title}
-                    </Link>
-                    <div className="text-gray-600 mb-4">{formatPrice(item.productVariant.price)} each</div>
+                    <p className="font-semibold text-lg">
+                      {item.productVariant.productName}
+                    </p>
+                    <div className="text-gray-600 mb-4">{item.productVariant.title} - {formatPrice(item.productVariant.price)}/each</div>
                     </div>
 
                   <div className="flex flex-wrap justify-between items-end">

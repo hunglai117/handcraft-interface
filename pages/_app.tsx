@@ -6,7 +6,8 @@ import { CartProvider } from '../contexts/CartContext';
 import { AuthProvider } from '../contexts/AuthContext';
 import { OrderProvider } from '../contexts/OrderContext';
 import { useRouter } from 'next/router';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -82,6 +83,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           </OrderProvider>
         </CartProvider>
       </AuthProvider>
+      <ToastContainer />
     </>
   );
 }

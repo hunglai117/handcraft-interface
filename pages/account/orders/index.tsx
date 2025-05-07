@@ -12,7 +12,7 @@ function OrdersPage() {
 
   useEffect(() => {
     fetchUserOrders(currentPage);
-  }, [currentPage, fetchUserOrders]);
+  }, [currentPage]);
 
   const getOrderStatusBadge = (status: OrderStatus) => {
     const statusMap: Record<OrderStatus, { color: string; label: string }> = {
@@ -23,16 +23,24 @@ function OrdersPage() {
       [OrderStatus.CANCELLED]: { color: 'bg-red-100 text-red-800', label: 'Cancelled' },
       [OrderStatus.COMPLETED]: { color: 'bg-green-100 text-green-800', label: 'Completed' },
       [OrderStatus.PAID]: { color: 'bg-green-100 text-green-800', label: 'Paid' },
+      [OrderStatus.READY_TO_SHIP]: { color: 'bg-indigo-100 text-indigo-800', label: 'Ready to Ship' },
+      [OrderStatus.ON_HOLD]: { color: 'bg-gray-100 text-gray-800', label: 'On Hold' },
+      [OrderStatus.OUT_FOR_DELIVERY]: { color: 'bg-orange-100 text-orange-800', label: 'Out for Delivery' },
+      [OrderStatus.REFUNDED]: { color: 'bg-gray-100 text-gray-800', label: 'Refunded' },
+      [OrderStatus.PARTIALLY_REFUNDED]: { color: 'bg-gray-100 text-gray-800', label: 'Partially Refunded' },
+      [OrderStatus.REFUND_REQUESTED]: { color: 'bg-yellow-50 text-yellow-700', label: 'Refund Requested' },
     };
 
     return (
-      <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusMap[status].color}`}>
-        {statusMap[status].label}
+      <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusMap[status]?.color || ''}`}>
+        {statusMap[status]?.label || status}
       </span>
     );
   };
 
   const renderPagination = () => {
+    if (!pagination) return null;
+
     const pages = [];
     for (let i = 1; i <= pagination.totalPages; i++) {
       pages.push(
@@ -47,6 +55,7 @@ function OrdersPage() {
         </button>
       );
     }
+
     return (
       <div className="flex justify-center mt-6">
         <button
@@ -84,8 +93,10 @@ function OrdersPage() {
             ) : orders.length === 0 ? (
               <div className="bg-white p-6 rounded-lg shadow text-center">
                 <p className="text-gray-600 mb-4">You haven't placed any orders yet.</p>
-                <Link href="/products" className="btn-primary">
-                  Browse Products
+                <Link href="/products" legacyBehavior>
+                  <a className="inline-block bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark">
+                    Browse Products
+                  </a>
                 </Link>
               </div>
             ) : (
@@ -114,19 +125,25 @@ function OrdersPage() {
                     <tbody className="divide-y divide-gray-200">
                       {orders.map(order => (
                         <tr key={order.id}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            #{order.id.substring(0, 8)}
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            <Link href={`/account/orders/${order.id}`} legacyBehavior>
+                              <a className="text-primary hover:text-primary-dark hover:underline hover:bg-gray-100 px-2 py-1 rounded">
+                              #{order.id.substring(0, 8)}
+                              </a>
+                            </Link>
+                            </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                            {/* {new Date(order.).toLocaleDateString()} */}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                            {new Date(order.createdAt).toLocaleDateString()}
+                            {formatPriceVND(order.totalAmount.toString())}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                            {formatPriceVND(order.totalPrice)}
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {getOrderStatusBadge(order.orderStatus)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">{getOrderStatusBadge(order.orderStatus)}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <Link href={`/account/orders/${order.id}`} className="text-primary hover:text-primary-dark">
-                              View Details
+                            <Link href={`/account/orders/${order.id}`} legacyBehavior>
+                              <a className="text-primary hover:text-primary-dark">View Details</a>
                             </Link>
                           </td>
                         </tr>
@@ -135,7 +152,7 @@ function OrdersPage() {
                   </table>
                 </div>
 
-                {pagination.totalPages > 1 && renderPagination()}
+                {pagination?.totalPages > 1 && renderPagination()}
               </>
             )}
           </div>

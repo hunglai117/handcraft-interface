@@ -86,8 +86,10 @@ function CheckoutPage() {
     try {
       const result = await verifyPromoCode(promoCode);
       if (result && result.valid && result.promotion) {
-        if(cart.subtotal < result.promotion.minimumOrderAmount) {
-            setPromoMessage('Order subtotal must be greater than ' + formatPriceVND(result.promotion.minimumOrderAmount.toString()));
+        if (cart.subtotal < result.promotion.minimumOrderAmount) {
+          setPromoMessage(
+            'Order subtotal must be greater than ' + formatPriceVND(result.promotion.minimumOrderAmount.toString())
+          );
           setPromoValid(false);
           return;
         }
@@ -128,7 +130,7 @@ function CheckoutPage() {
       };
 
       // Ensure promotion is only included if the subtotal meets the minimum order amount
-      if (!promoValid ) {
+      if (!promoValid) {
         orderData.promotion = undefined;
       }
 
@@ -136,8 +138,8 @@ function CheckoutPage() {
 
       if (order) {
         // if (paymentMethod === PaymentMethod.CASH_ON_DELIVERY) {
-          // Redirect to order confirmation page
-          router.push(order.paymentUrl || `/checkout/success?orderId=${order.id}`);
+        // Redirect to order confirmation page
+        router.push(order.paymentUrl || `/checkout/success?orderId=${order.id}`);
         // } else {
         //   // For online payment methods, redirect to payment gateway
         //   router.push(`/checkout/payment?orderId=${order.id}`);
@@ -183,7 +185,6 @@ function CheckoutPage() {
             {error && <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-6">{error}</div>}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Shipping and Payment Form */}
               <div className="lg:col-span-2">
                 <div className="bg-white rounded-lg shadow p-6 mb-6">
                   <h2 className="text-xl font-medium mb-4">Shipping Information</h2>
@@ -191,7 +192,7 @@ function CheckoutPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
                         <label htmlFor="fullName" className="block mb-1 font-medium">
-                          Full Name *
+                          Full Name <span style={{ color: 'red' }}>*</span>
                         </label>
                         <input
                           type="text"
@@ -199,13 +200,13 @@ function CheckoutPage() {
                           name="fullName"
                           value={shippingAddress.fullName}
                           onChange={handleChange}
-                          className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-primary"
+                          className="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary"
                           required
                         />
                       </div>
                       <div>
                         <label htmlFor="phone" className="block mb-1 font-medium">
-                          Phone Number *
+                          Phone Number <span style={{ color: 'red' }}>*</span>
                         </label>
                         <input
                           type="tel"
@@ -213,7 +214,7 @@ function CheckoutPage() {
                           name="phone"
                           value={shippingAddress.phone}
                           onChange={handleChange}
-                          className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-primary"
+                          className="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary"
                           required
                         />
                       </div>
@@ -221,7 +222,7 @@ function CheckoutPage() {
 
                     <div className="mb-4">
                       <label htmlFor="email" className="block mb-1 font-medium">
-                        Email Address *
+                        Email Address <span style={{ color: 'red' }}>*</span>
                       </label>
                       <input
                         type="email"
@@ -229,14 +230,14 @@ function CheckoutPage() {
                         name="email"
                         value={shippingAddress.email}
                         onChange={handleChange}
-                        className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-primary"
+                        className="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary"
                         required
                       />
                     </div>
 
                     <div className="mb-4">
                       <label htmlFor="address" className="block mb-1 font-medium">
-                        Address *
+                        Address <span style={{ color: 'red' }}>*</span>
                       </label>
                       <input
                         type="text"
@@ -244,7 +245,7 @@ function CheckoutPage() {
                         name="address"
                         value={shippingAddress.address}
                         onChange={handleChange}
-                        className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-primary"
+                        className="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary"
                         required
                       />
                     </div>
@@ -252,7 +253,7 @@ function CheckoutPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div>
                         <label htmlFor="city" className="block mb-1 font-medium">
-                          City *
+                          City <span style={{ color: 'red' }}>*</span>
                         </label>
                         <input
                           type="text"
@@ -260,13 +261,13 @@ function CheckoutPage() {
                           name="city"
                           value={shippingAddress.city}
                           onChange={handleChange}
-                          className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-primary"
+                          className="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary"
                           required
                         />
                       </div>
                       <div>
                         <label htmlFor="country" className="block mb-1 font-medium">
-                          Country *
+                          Country <span style={{ color: 'red' }}>*</span>
                         </label>
                         <input
                           type="text"
@@ -274,7 +275,7 @@ function CheckoutPage() {
                           name="country"
                           value={shippingAddress.country}
                           onChange={handleChange}
-                          className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-primary"
+                          className="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary"
                           required
                         />
                       </div>
@@ -302,12 +303,10 @@ function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Order Summary */}
               <div className="col-span-1">
                 <div className="bg-white rounded-2xl shadow-lg p-6 space-y-6">
                   <h2 className="text-2xl font-semibold border-b pb-4">Order Summary</h2>
 
-                  {/* Cart Items */}
                   <div className="space-y-4">
                     {cart?.cartItems?.map((item: CartItem) => (
                       <div key={item.id} className="flex items-center gap-4">
@@ -325,8 +324,19 @@ function CheckoutPage() {
                           </span>
                         </div>
                         <div className="flex-1">
-                          <p className="font-medium text-gray-800">{item.productVariant.title}</p>
+                          <p
+                            className="font-medium text-gray-800"
+                            style={{
+                              whiteSpace: 'nowrap',
+                              textOverflow: 'ellipsis',
+                              overflow: 'hidden',
+                              maxWidth: '100px',
+                            }}
+                          >
+                            {item.productVariant.productName}
+                          </p>
                           <p className="text-sm text-gray-500">
+                            {item.productVariant.title} -{' '}
                             {formatPriceVND((item.productVariant.price * item.quantity).toString())}
                           </p>
                         </div>
@@ -334,7 +344,6 @@ function CheckoutPage() {
                     ))}
                   </div>
 
-                  {/* Promo Code */}
                   <div className="border-t pt-4">
                     <form onSubmit={handleVerifyPromoCode} className="flex items-center gap-2">
                       <input
@@ -343,7 +352,7 @@ function CheckoutPage() {
                         onChange={e => setPromoCode(e.target.value)}
                         placeholder="Enter promo code"
                         className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary"
-                        style={{ width:'80%' }}
+                        style={{ width: '80%' }}
                       />
                       <button
                         type="submit"
@@ -358,7 +367,6 @@ function CheckoutPage() {
                     )}
                   </div>
 
-                  {/* Totals */}
                   <div className="space-y-2 border-t pt-4 text-sm text-gray-700">
                     <div className="flex justify-between">
                       <span>Subtotal</span>
@@ -380,7 +388,6 @@ function CheckoutPage() {
                     </div>
                   </div>
 
-                  {/* Place Order Button */}
                   <button
                     onClick={handlePlaceOrder}
                     disabled={processingOrder || !cart}

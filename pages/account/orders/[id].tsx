@@ -1,60 +1,72 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '@/components/Layout';
 import { withAuth } from '@/utils/withAuth';
-import { useOrder } from '@/contexts/OrderContext';
-import { OrderStatus, PaymentStatus, PaymentMethod } from '@/services/orderService';
+import orderService, { Order, OrderStatus, PaymentStatus } from '@/services/orderService';
 import { formatPriceVND } from '@/utils';
+import { useAuth } from '@/contexts/AuthContext';
 
 function OrderDetailPage() {
   const router = useRouter();
   const { id } = router.query;
-  const { currentOrder, loading, error, fetchOrderDetails, cancelOrder, createPaymentUrl } = useOrder();
-  const [cancelLoading, setCancelLoading] = useState(false);
-  const [paymentLoading, setPaymentLoading] = useState(false);
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
+  const [order, setOrder] = useState<Order | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [cancelLoading, setCancelLoading] = useState<boolean>(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState<boolean>(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (id && typeof id === 'string') {
-      fetchOrderDetails(id);
+      setLoading(true);
+      orderService
+        .getOrder(id)
+        .then(res => {
+          setOrder(res);
+          setError(null);
+        })
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .catch(err => {
+          setError('Unable to load order. Please try again later.');
+        })
+        .finally(() => setLoading(false));
     }
-  }, [id, fetchOrderDetails]);
+  }, [id]);
 
   const handleCancelOrder = async () => {
-    if (!currentOrder) return;
+    if (!order) return;
 
     setCancelLoading(true);
-    const success = await cancelOrder(currentOrder.id);
-    setCancelLoading(false);
-
-    if (success) {
+    try {
+      await orderService.cancelOrder(order.id);
+      const updatedOrder = await orderService.getOrder(order.id);
+      setOrder(updatedOrder);
       setShowCancelConfirm(false);
-    }
-  };
-
-  const handleCreatePayment = async () => {
-    if (!currentOrder) return;
-
-    setPaymentLoading(true);
-    const paymentUrl = await createPaymentUrl(currentOrder.id);
-    setPaymentLoading(false);
-
-    if (paymentUrl) {
-      window.location.href = paymentUrl;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      alert('Failed to cancel the order. Please try again.');
+    } finally {
+      setCancelLoading(false);
     }
   };
 
   const getOrderStatusBadge = (status: OrderStatus) => {
     const statusMap: Record<OrderStatus, { color: string; label: string }> = {
-      [OrderStatus.PENDING]: { color: 'bg-yellow-100 text-yellow-800', label: 'Pending' },
-      [OrderStatus.PROCESSING]: { color: 'bg-blue-100 text-blue-800', label: 'Processing' },
-      [OrderStatus.SHIPPED]: { color: 'bg-purple-100 text-purple-800', label: 'Shipped' },
-      [OrderStatus.DELIVERED]: { color: 'bg-green-100 text-green-800', label: 'Delivered' },
-      [OrderStatus.CANCELLED]: { color: 'bg-red-100 text-red-800', label: 'Cancelled' },
-      [OrderStatus.COMPLETED]: { color: 'bg-green-100 text-green-800', label: 'Completed' },
-      [OrderStatus.PAID]: { color: 'bg-green-100 text-green-800', label: 'Paid' },
+      pending: { color: 'bg-yellow-100 text-yellow-800', label: 'Pending' },
+      processing: { color: 'bg-blue-100 text-blue-800', label: 'Processing' },
+      shipped: { color: 'bg-purple-100 text-purple-800', label: 'Shipped' },
+      delivered: { color: 'bg-green-100 text-green-800', label: 'Delivered' },
+      cancelled: { color: 'bg-red-100 text-red-800', label: 'Cancelled' },
+      completed: { color: 'bg-green-100 text-green-800', label: 'Completed' },
+      paid: { color: 'bg-green-100 text-green-800', label: 'Paid' },
+      ready_to_ship: { color: 'bg-orange-100 text-orange-800', label: 'Ready to Ship' },
+      on_hold: { color: 'bg-gray-100 text-gray-800', label: 'On Hold' },
+      out_for_delivery: { color: 'bg-teal-100 text-teal-800', label: 'Out for Delivery' },
+      refund_requested: { color: 'bg-pink-100 text-pink-800', label: 'Refund Requested' },
+      refunded: { color: 'bg-blue-100 text-blue-800', label: 'Refunded' },
+      partially_refunded: { color: 'bg-gray-100 text-gray-800', label: 'Partially Refunded' },
     };
 
     return (
@@ -66,11 +78,11 @@ function OrderDetailPage() {
 
   const getPaymentStatusBadge = (status: PaymentStatus) => {
     const statusMap: Record<PaymentStatus, { color: string; label: string }> = {
-      [PaymentStatus.PENDING]: { color: 'bg-yellow-100 text-yellow-800', label: 'Pending' },
-      [PaymentStatus.COMPLETED]: { color: 'bg-green-100 text-green-800', label: 'Completed' },
-      [PaymentStatus.FAILED]: { color: 'bg-red-100 text-red-800', label: 'Failed' },
-      [PaymentStatus.REFUNDED]: { color: 'bg-blue-100 text-blue-800', label: 'Refunded' },
-      [PaymentStatus.PARTIALLY_REFUNDED]: { color: 'bg-gray-100 text-gray-800', label: 'Partially Refunded' },
+      pending: { color: 'bg-yellow-100 text-yellow-800', label: 'Unpaid' },
+      completed: { color: 'bg-green-100 text-green-800', label: 'Paid' },
+      failed: { color: 'bg-red-100 text-red-800', label: 'Failed' },
+      refunded: { color: 'bg-blue-100 text-blue-800', label: 'Refunded' },
+      partially_refunded: { color: 'bg-gray-100 text-gray-800', label: 'Partially Refunded' },
     };
 
     return (
@@ -80,26 +92,16 @@ function OrderDetailPage() {
     );
   };
 
-  const getPaymentMethodLabel = (method: PaymentMethod) => {
-    const methodMap: Record<PaymentMethod, string> = {
-      [PaymentMethod.CASH_ON_DELIVERY]: 'Cash on Delivery',
-      [PaymentMethod.BANK_TRANSFER]: 'Bank Transfer',
-      [PaymentMethod.CREDIT_CARD]: 'Credit Card',
-      [PaymentMethod.VNPAY]: 'VNPay',
-    };
-
-    return methodMap[method];
-  };
-
   const canCancelOrder =
-    currentOrder &&
-    [OrderStatus.PENDING, OrderStatus.PROCESSING].includes(currentOrder.orderStatus) &&
-    currentOrder.paymentStatus !== PaymentStatus.COMPLETED;
+    order &&
+    [OrderStatus.PENDING, OrderStatus.PROCESSING].includes(order.orderStatus) &&
+    order.paymentStatus !== PaymentStatus.COMPLETED;
 
   const needsPayment =
-    currentOrder &&
-    currentOrder.paymentMethod !== PaymentMethod.CASH_ON_DELIVERY &&
-    currentOrder.paymentStatus === PaymentStatus.PENDING;
+    order &&
+    order.orderStatus === OrderStatus.PENDING &&
+    order.paymentStatus === PaymentStatus.PENDING &&
+    !!order.paymentUrl;
 
   return (
     <Layout title="Order Details">
@@ -108,16 +110,10 @@ function OrderDetailPage() {
           <div className="max-w-5xl mx-auto">
             <div className="mb-6">
               <Link href="/account/orders" className="text-primary hover:underline flex items-center">
-                <svg
-                  className="w-4 h-4 mr-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
-                Back to Orders
+                Back to order list
               </Link>
             </div>
 
@@ -129,66 +125,34 @@ function OrderDetailPage() {
               <div className="flex justify-center">
                 <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
               </div>
-            ) : currentOrder ? (
+            ) : order ? (
               <div className="bg-white rounded-lg shadow overflow-hidden">
-                {/* Order Header */}
-                <div className="p-6 border-b border-gray-200">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-500">Order ID</p>
-                      <p className="font-medium">#{currentOrder.id.substring(0, 8)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Date Placed</p>
-                      <p className="font-medium">{new Date(currentOrder.createdAt).toLocaleDateString()}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Order Status</p>
-                      <div className="mt-1">{getOrderStatusBadge(currentOrder.orderStatus)}</div>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Payment Status</p>
-                      <div className="mt-1">{getPaymentStatusBadge(currentOrder.paymentStatus)}</div>
-                    </div>
+                {/* Header */}
+                <div className="p-6 border-b border-gray-200 grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-500">Order ID</p>
+                    <p className="font-medium">#{order.id.slice(0, 8)}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Order Date</p>
+                    {/* <p className="font-medium">{new Date(order.createdAt).toLocaleDateString()}</p> */}
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Status</p>
+                    <div className="mt-1">{getOrderStatusBadge(order.orderStatus)}</div>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Payment</p>
+                    <div className="mt-1">{getPaymentStatusBadge(order.paymentStatus)}</div>
                   </div>
                 </div>
 
-                {/* Order Items */}
-                <div className="p-6 border-b border-gray-200">
-                  <h2 className="text-xl font-medium mb-4">Items</h2>
-                  <div className="divide-y divide-gray-200">
-                    {currentOrder.orderItems.map(item => (
-                      <div key={item.id} className="py-4 flex flex-wrap md:flex-nowrap">
-                        <div className="md:w-24 w-full flex-shrink-0 mb-4 md:mb-0">
-                          {item.productVariant.images && item.productVariant.images[0] && (
-                            <div className="relative h-24 w-24 rounded overflow-hidden">
-                              <Image
-                                src={item.productVariant.images[0]}
-                                alt={item.productVariant.name}
-                                fill
-                                className="object-cover"
-                              />
-                            </div>
-                          )}
-                        </div>
-                        <div className="md:ml-6 flex-grow">
-                          <h3 className="text-lg font-medium">{item.productVariant.name}</h3>
-                          <p className="text-gray-500 text-sm">Quantity: {item.quantity}</p>
-                        </div>
-                        <div className="w-full md:w-auto mt-2 md:mt-0">
-                          <p className="font-medium text-right">{formatPriceVND(item.price)}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Order Summary */}
+                {/* Summary */}
                 <div className="p-6 border-b border-gray-200">
                   <h2 className="text-xl font-medium mb-4">Summary</h2>
                   <div className="flex justify-between mb-2">
                     <p className="text-gray-600">Subtotal</p>
-                    <p className="font-medium">{formatPriceVND(currentOrder.totalPrice)}</p>
+                    <p className="font-medium">{formatPriceVND(order.totalAmount.toString())}</p>
                   </div>
                   <div className="flex justify-between mb-2">
                     <p className="text-gray-600">Shipping</p>
@@ -196,31 +160,21 @@ function OrderDetailPage() {
                   </div>
                   <div className="flex justify-between pt-4 border-t border-gray-200">
                     <p className="text-lg font-bold">Total</p>
-                    <p className="text-lg font-bold">{formatPriceVND(currentOrder.totalPrice)}</p>
+                    <p className="text-lg font-bold">{formatPriceVND(order.totalAmount.toString())}</p>
                   </div>
-                </div>
-
-                {/* Payment Method */}
-                <div className="p-6 border-b border-gray-200">
-                  <h2 className="text-xl font-medium mb-4">Payment Method</h2>
-                  <p>{getPaymentMethodLabel(currentOrder.paymentMethod)}</p>
                 </div>
 
                 {/* Shipping Address */}
                 <div className="p-6 border-b border-gray-200">
                   <h2 className="text-xl font-medium mb-4">Shipping Address</h2>
-                  <p className="mb-1">{currentOrder.shippingAddress.fullName}</p>
-                  <p className="mb-1">{currentOrder.shippingAddress.phone}</p>
-                  <p className="mb-1">{currentOrder.shippingAddress.address}</p>
+                  <p className="mb-1">{user?.fullName}</p>
+                  <p className="mb-1">{order.shippingInfo.phone}</p>
                   <p className="mb-1">
-                    {currentOrder.shippingAddress.city}
-                    {currentOrder.shippingAddress.state && `, ${currentOrder.shippingAddress.state}`}
-                    {currentOrder.shippingAddress.zipCode && ` ${currentOrder.shippingAddress.zipCode}`}
+                    {order.shippingInfo.address} - {order.shippingInfo.city} - {order.shippingInfo.country}
                   </p>
-                  <p>{currentOrder.shippingAddress.country}</p>
                 </div>
 
-                {/* Action buttons */}
+                {/* Actions */}
                 <div className="p-6 flex flex-wrap gap-4">
                   {canCancelOrder && (
                     <button
@@ -230,22 +184,13 @@ function OrderDetailPage() {
                       Cancel Order
                     </button>
                   )}
-
-                  {needsPayment && (
-                    <button
-                      onClick={handleCreatePayment}
-                      disabled={paymentLoading}
-                      className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded flex items-center"
+                  {needsPayment && order.paymentUrl && (
+                    <Link
+                      href={order.paymentUrl as string}
+                      className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded text-center"
                     >
-                      {paymentLoading ? (
-                        <>
-                          <span className="inline-block h-4 w-4 border-t-2 border-b-2 border-white rounded-full animate-spin mr-2"></span>
-                          Processing...
-                        </>
-                      ) : (
-                        'Pay Now'
-                      )}
-                    </button>
+                      Pay Now
+                    </Link>
                   )}
                 </div>
               </div>
@@ -260,16 +205,21 @@ function OrderDetailPage() {
 
       {/* Cancel confirmation modal */}
       {showCancelConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-            <h3 className="text-xl font-medium mb-4">Cancel Order</h3>
-            <p className="mb-6">Are you sure you want to cancel this order? This action cannot be undone.</p>
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50 p-4"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
+        >
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+            <h3 className="text-xl font-semibold mb-4 text-gray-800">Cancel Order</h3>
+            <p className="mb-6 text-gray-600">
+              Are you sure you want to cancel this order? This action cannot be undone.
+            </p>
             <div className="flex justify-end gap-4">
               <button
                 onClick={() => setShowCancelConfirm(false)}
-                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-gray-700"
               >
-                No, Keep Order
+                No
               </button>
               <button
                 onClick={handleCancelOrder}
@@ -282,7 +232,7 @@ function OrderDetailPage() {
                     Processing...
                   </>
                 ) : (
-                  'Yes, Cancel Order'
+                  'Confirm Cancel'
                 )}
               </button>
             </div>

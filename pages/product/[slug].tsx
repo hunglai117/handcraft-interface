@@ -6,6 +6,7 @@ import productService from '../../services/productService';
 import cartService from '../../services/cartService';
 import { useAuth } from '../../contexts/AuthContext';
 import { Product, ProductVariant } from '@/lib/types/product.type';
+import { toast } from 'react-toastify';
 
 const ProductDetailPage = () => {
   const router = useRouter();
@@ -20,7 +21,6 @@ const ProductDetailPage = () => {
   const [error, setError] = useState('');
   const [addingToCart, setAddingToCart] = useState(false);
   const [activeImage, setActiveImage] = useState('');
-  const [success, setSuccess] = useState('');
 
   useEffect(() => {
     if (slug) {
@@ -110,15 +110,35 @@ const ProductDetailPage = () => {
 
     setAddingToCart(true);
     setError('');
-    setSuccess('');
 
     try {
       await cartService.addToCart({
         productVariantId: selectedVariant.id,
         quantity: quantity,
       });
-      setSuccess('Product added to cart!');
-      setTimeout(() => setSuccess(''), 3000);
+      toast.success('Product added to cart successfully!');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setError(err.message || 'Failed to add product to cart');
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+  const handleBuyNow = async () => {
+    if (!selectedVariant) return;
+
+    if (!user) {
+      // Redirect to login if not authenticated
+      router.push(`/login?redirect=${router.asPath}`);
+      return;
+    }
+
+    try {
+      await cartService.addToCart({
+        productVariantId: selectedVariant.id,
+        quantity: quantity,
+      });
+      router.push('/checkout');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || 'Failed to add product to cart');
@@ -197,29 +217,6 @@ const ProductDetailPage = () => {
             Back
           </button>
         </div>
-
-        {success && (
-          <div className="mb-4 bg-green-100 text-green-700 p-4 rounded flex items-center justify-between">
-            <div className="flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              {success}
-            </div>
-            <button
-              onClick={() => router.push('/cart')}
-              className="bg-green-700 text-white px-4 py-1 rounded hover:bg-green-800 transition"
-            >
-              View Cart
-            </button>
-          </div>
-        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Product Images */}
@@ -349,7 +346,7 @@ const ProductDetailPage = () => {
             {/* Add to Cart Button */}
             <div className="mb-6">
               <button
-                className="w-full bg-primary text-white py-3 px-4 rounded-md hover:bg-primary-dark transition flex items-center justify-center"
+                className="cursor-pointer w-full bg-primary text-white py-3 px-4 rounded-md hover:bg-primary-dark transition flex items-center justify-center"
                 onClick={handleAddToCart}
                 disabled={!selectedVariant || selectedVariant.stockQuantity < 1 || addingToCart}
               >
@@ -363,6 +360,11 @@ const ProductDetailPage = () => {
                 ) : (
                   'Add to Cart'
                 )}
+              </button>
+              <button
+              onClick={handleBuyNow}
+              className="cursor-pointer w-full my-2 bg-primary text-white py-3 px-4 rounded-md hover:bg-primary-dark transition flex items-center justify-center">
+                Buy Now
               </button>
             </div>
 

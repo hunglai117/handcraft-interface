@@ -101,7 +101,7 @@ export default function Contact() {
                     name="name"
                     value={formState.name}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary"
                     required
                   />
                 </div>
@@ -116,7 +116,7 @@ export default function Contact() {
                     name="email"
                     value={formState.email}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary"
                     required
                   />
                 </div>

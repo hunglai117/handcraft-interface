@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-primary text-white pt-12 pb-6">
+    <footer className="bg-primary text-white pt-12 pb-6" style={{marginTop: '50px'}}>
       <div className="container mx-auto px-4 max-w-container">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
