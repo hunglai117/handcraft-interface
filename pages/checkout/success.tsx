@@ -167,6 +167,7 @@ function OrderSuccessPage() {
                 <Link
                   href={`/account/orders/${currentOrder.id}`}
                   className="bg-primary text-white px-6 py-3 rounded hover:bg-primary-dark"
+                  style={{color: 'white'}}
                 >
                   View Order Details
                 </Link>

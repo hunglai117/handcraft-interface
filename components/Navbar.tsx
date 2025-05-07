@@ -26,24 +26,12 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsCategoryOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
     fetchData();
     if (token) {
       fetchCart();
     }
   }, [token]);
+
   const fetchData = async () => {
     try {
       const categoriesResponse = await categoryService.getMenuCategories();
@@ -74,6 +62,12 @@ export default function Navbar() {
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
+  };
+
+  const handleClickItemCategory = (categoryId: string) => {
+    setIsCategoryOpen(false);
+    
+    router.push(`/categories/${categoryId}`);
   };
 
   if (!mounted)
@@ -113,7 +107,6 @@ export default function Navbar() {
                   Home
                 </Link>
                 <div
-                  ref={dropdownRef}
                   onClick={() => setIsCategoryOpen(prev => !prev)}
                   className={`
                             relative
@@ -131,10 +124,12 @@ export default function Navbar() {
                     <div className="absolute top-full left-0 mt-2 bg-white shadow-lg border border-gray-200 rounded-lg z-50 w-48">
                       <ul className="py-2">
                         {menuCategories.map(category => (
-                          <li key={category.id} className="px-4 py-2 hover:bg-gray-100">
-                            <Link href={`/categories/${category.id}`} onClick={() => setIsCategoryOpen(false)}>
-                              {category.name}
-                            </Link>
+                          <li
+                            key={category.id}
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                            onClick={() => handleClickItemCategory(category.id)}
+                          >
+                            {category.name}
                           </li>
                         ))}
                       </ul>

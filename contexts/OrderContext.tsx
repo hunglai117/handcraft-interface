@@ -17,7 +17,7 @@ interface OrderContextType {
   fetchOrderDetails: (orderId: string) => Promise<void>;
   createOrder: (orderData: PlaceOrderDto) => Promise<Order | null>;
   cancelOrder: (orderId: string) => Promise<boolean>;
-  createPaymentUrl: (orderId: string) => Promise<string | null>;
+  // createPaymentUrl: (orderId: string) => Promise<string | null>;
   verifyPromoCode: (code: string) => Promise<{valid:boolean, promotion?:Promotion, message?:string}>;
   clearCurrentOrder: () => void;
 }
@@ -127,22 +127,22 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createPaymentUrl = async (orderId: string): Promise<string | null> => {
-    if (!user) return null;
+  // const createPaymentUrl = async (orderId: string): Promise<string | null> => {
+  //   if (!user) return null;
 
-    setLoading(true);
-    setError(null);
+  //   setLoading(true);
+  //   setError(null);
 
-    try {
-      const { paymentUrl } = await orderService.createPaymentUrl(orderId);
-      return paymentUrl;
-    } catch (err: any) {
-      setError(err.message || 'Failed to create payment URL');
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   try {
+  //     const { paymentUrl } = await orderService.createPaymentUrl(orderId);
+  //     return paymentUrl;
+  //   } catch (err: any) {
+  //     setError(err.message || 'Failed to create payment URL');
+  //     return null;
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const verifyPromoCode = async (code: string) => {
     setLoading(true);
@@ -176,7 +176,7 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
         fetchOrderDetails,
         createOrder,
         cancelOrder,
-        createPaymentUrl,
+        // createPaymentUrl,
         verifyPromoCode,
         clearCurrentOrder,
       }}

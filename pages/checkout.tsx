@@ -137,7 +137,7 @@ function CheckoutPage() {
       if (order) {
         // if (paymentMethod === PaymentMethod.CASH_ON_DELIVERY) {
           // Redirect to order confirmation page
-          router.push(`/checkout/success?orderId=${order.id}`);
+          router.push(order.paymentUrl || `/checkout/success?orderId=${order.id}`);
         // } else {
         //   // For online payment methods, redirect to payment gateway
         //   router.push(`/checkout/payment?orderId=${order.id}`);
